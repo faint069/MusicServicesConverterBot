@@ -74,23 +74,39 @@ namespace ConverterBot
             }
 
             var botclient = ( TelegramBotClient ) Sender;
-
+            
             if ( E.Message.Text != null )
             {
-               string reply = ProcessMessage( E.Message );
-               
-               await botclient.SendTextMessageAsync( E.Message.Chat.Id, reply );
+                string reply = ProcessMessage( E.Message );
+
+                if ( reply != null )
+                {
+                    await botclient.SendTextMessageAsync( E.Message.Chat.Id, reply );
+                }
             }
         }
 
         private static string ProcessMessage( Message message )
         {
+            IMusic parsedMusic;
+            IParser parser;
+            try
+            {
+                parser = _parsers.First( _ => message.Text.Contains( _.Key ) ).Value;
+            }
+            catch ( InvalidOperationException exception )
+            {
+                return null;
+            }
 
-            IParser parser = _parsers.First( _ => message.Text.Contains( _.Key ) ).Value;
+            parsedMusic = parser.ParseUri( message.Text );
 
-            IMusic parsedMusic = parser.ParseUri( message.Text );
+            if ( parsedMusic != null )
+            {
+                return parsedMusic.ToString( );
+            }
 
-            return parsedMusic.ToString( );
+            return null;
         }
     }
 }
