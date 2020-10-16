@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
 using ConverterBot.Models;
 using SpotifyAPI.Web;
 
@@ -11,6 +13,22 @@ namespace ConverterBot.Parsers
             //https://open.spotify.com/track/2fTdRdN73RgIgcUZN33dvt
             //https://open.spotify.com/album/2N367tN1eIXrHNVe86aVy4?si=A-1kS4F4Tfy2I_PYEDVhMA
             //https://open.spotify.com/artist/5cj0lLjcoR7YOSnhnX0Po5
+            if ( Uri.Contains( "tospotify" ) )
+            {
+                string HTMLPattern = "(https://open.spotify.com).*?(\")";
+                string URiPattern = @"(https://link\.tospotify\.com).*?($|\s)";
+                Uri = Regex.Match( Uri, URiPattern ).Value.TrimEnd();
+                WebClient wc = new WebClient(  );
+                wc.Headers.Add ("user-agent", "MusicServicesConverterBot");
+                string resp = wc.DownloadString( Uri );
+
+                Uri = Regex.Match( resp, HTMLPattern ).Value.TrimEnd('"');
+                if ( Uri.Contains( "?" ) )
+                {
+                    Uri = Uri.Split( "?" ).First( );
+                }
+            }
+            
             string[] uriParts = Uri.Split( "/" );
 
             if ( uriParts.Contains( "track" ) )
