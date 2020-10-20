@@ -1,4 +1,6 @@
-﻿namespace ConverterBot.Models
+﻿using System;
+
+namespace ConverterBot.Models
 {
     public class Track : IMusic
     {
@@ -48,9 +50,27 @@
 
         public string SpotifyId => _spotifyId;
 
+        public string QueryString( )
+        {
+            return $"{_artist} {_title}";
+        }
+
         public override string ToString( )
         {
             return $"Track Title: {_title}\nAlbum: {_album}\nArtist: {_artist}";
+        }
+
+        public bool Equals( IMusic other )
+        {
+            if ( !( other is Track ) )
+            {
+                return false;
+            }
+            
+            Track otherTrack = ( Track ) other;
+            return string.Equals( _title,  otherTrack.Title,  StringComparison.OrdinalIgnoreCase ) &&
+                   string.Equals( _album,  otherTrack.Album,  StringComparison.OrdinalIgnoreCase ) &&
+                   string.Equals( _artist, otherTrack.Artist, StringComparison.OrdinalIgnoreCase );
         }
     }
 }

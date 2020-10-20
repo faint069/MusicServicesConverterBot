@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace ConverterBot.Models
 {
@@ -55,9 +56,31 @@ namespace ConverterBot.Models
 
         public string SpotifyId => _spotifyId;
 
+        /// <summary>
+        /// Строка для поиска
+        /// </summary>
+        /// <returns></returns>
+        public string QueryString( )
+        {
+            return $"{_artist} {_title}";
+        }
+
         public override string ToString( )
         {
             return $"Album Title: {_title}\nAlbum Artist: {_artist}\nRelease Year: {_year}";
+        }
+
+        public bool Equals( IMusic other )
+        {
+            if ( !(other is Album) )
+            {
+                return false;
+            }
+
+            Album otherAlbum = ( Album ) other;
+            return string.Equals( _title, otherAlbum.Title,  StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(_artist, otherAlbum.Artist, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(_year,   otherAlbum.Year,   StringComparison.OrdinalIgnoreCase);
         }
     }
 }
