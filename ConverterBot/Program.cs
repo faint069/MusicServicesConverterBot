@@ -19,6 +19,9 @@ namespace ConverterBot
     class Program
     {
         private static Dictionary<string, IParser> _parsers;
+        
+        private static Regex uriRegex = new Regex(@"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)");
+        
         private static readonly List<string> StickerIds = new List<string>
         {
             "CAACAgQAAxkBAAIFDV-Jls0xIhjVz1MD2hTNNfhmQpD9AAIrAAOYNXECYh2sqTkGNV0bBA",
@@ -29,7 +32,6 @@ namespace ConverterBot
             "CAACAgIAAxkBAAIFFl-Jl4wCWT6gvwwAAe_uBeJMbnOscgACFwMAAs-71A59adsQhEjPrRsE",
             "CAACAgIAAxkBAAIFF1-Jl5fJ4fQtLx9ss6PRp30Z7rNjAAIbAwACz7vUDsIc3bMyqex1GwQ"
         };
-        private static Regex uriRegex = new Regex(@"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)");
         
     
         private static void Main( )
@@ -63,10 +65,10 @@ namespace ConverterBot
 
             Log.Information( "Подключение к боту..." );
 
-            TelegramBotClient bot_client = new TelegramBotClient( Config.TelegramToken );
+            TelegramBotClient botClient = new TelegramBotClient( Config.TelegramToken );
 
-            bot_client.OnMessage += BotOnMessage;
-            bot_client.StartReceiving( );
+            botClient.OnMessage += BotOnMessage;
+            botClient.StartReceiving( );
 
             Log.Information( "Подключение к боту успешно" );
 
@@ -84,7 +86,7 @@ namespace ConverterBot
                 throw new ApplicationException( "Ошибка при отправке сообщения." );
             }
 
-            var botclient = ( TelegramBotClient ) Sender;
+            var botClient = ( TelegramBotClient ) Sender;
             
             switch ( E.Message.Type )
             {
@@ -92,11 +94,10 @@ namespace ConverterBot
                 {
                     Log.Information( $"Получено текстовое сообщение в чате " +
                                      $"{E.Message.Chat.Id} " +
-                                     $" от {E.Message.From.FirstName} " +
+                                     $"от {E.Message.From.FirstName} " +
                                      $"{E.Message.From.LastName}. " +
                                      $"Текст: {E.Message.Text}" );
                     
-                    string reply;
                     IParser parser;
                     IMusic parsedMusic;
 
@@ -107,18 +108,18 @@ namespace ConverterBot
                         {
                             parser = _parsers.First( _ => E.Message.Text.Contains( _.Key ) ).Value;
                             parsedMusic = parser.ParseUri( E.Message.Text );
-                            await botclient.SendTextMessageAsync( E.Message.Chat.Id, parsedMusic.ToString( ) );
+                            await botClient.SendTextMessageAsync( E.Message.Chat.Id, parsedMusic.ToString( ) );
                         }
                         catch ( InvalidOperationException exception )
                         {
-                            Log.Error( "Получена ссылка, но парсер не найдет" );
-                            await botclient.SendTextMessageAsync( E.Message.Chat.Id,
+                            Log.Error( "Получена ссылка, но парсер не найден" );
+                            await botClient.SendTextMessageAsync( E.Message.Chat.Id,
                                 "Либо это не ссылка на музыку, либо я не умею работать с этим сервисом" );
                         }
                         catch ( NullReferenceException )
                         {
                             Log.Error( "Парсер не справился" );
-                            await botclient.SendTextMessageAsync( E.Message.Chat.Id,
+                            await botClient.SendTextMessageAsync( E.Message.Chat.Id,
                                 "Музыка не распознана" );
                         }
                     break;
@@ -133,12 +134,11 @@ namespace ConverterBot
                                      $"Текст: {E.Message.Text}" );
                     
                     var selectedStickerId = StickerIds.OrderBy( x => Guid.NewGuid( ) ).FirstOrDefault( );
-                    await botclient.SendStickerAsync( E.Message.Chat.Id, 
+                    await botClient.SendStickerAsync( E.Message.Chat.Id, 
                                                 new InputOnlineFile( selectedStickerId ) );
                     
                     break;
                 }
-
             }
         }
     }
