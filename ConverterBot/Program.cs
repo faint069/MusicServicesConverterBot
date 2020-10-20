@@ -10,7 +10,6 @@ using Serilog;
 using Serilog.Events;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
 
@@ -32,8 +31,8 @@ namespace ConverterBot
             "CAACAgIAAxkBAAIFFl-Jl4wCWT6gvwwAAe_uBeJMbnOscgACFwMAAs-71A59adsQhEjPrRsE",
             "CAACAgIAAxkBAAIFF1-Jl5fJ4fQtLx9ss6PRp30Z7rNjAAIbAwACz7vUDsIc3bMyqex1GwQ"
         };
-        
-    
+
+
         private static void Main( )
         {
             if ( !Directory.Exists( Config.LogPath ) )
@@ -42,25 +41,25 @@ namespace ConverterBot
             }
 
             Log.Logger = new LoggerConfiguration( )
-                         .MinimumLevel.Debug( )
-                         .MinimumLevel.Override( "Microsoft", LogEventLevel.Warning )
-                         .MinimumLevel.Override( "SpotifyAPI.Web", Config.LogLevel )
-                         .MinimumLevel.Override( "Telegram.Bot", Config.LogLevel )
-                         .MinimumLevel.Override( "Yandex.Music.Api", LogEventLevel.Information )
-                         .Enrich.FromLogContext( )
-                         .WriteTo.File( $"{Config.LogPath}{DateTime.Now:yyyy-MM-dd-hh_mm_ss}.log",
-                            LogEventLevel.Debug )
-                         .WriteTo.Console( LogEventLevel.Debug )
-                         .CreateLogger( );
+                .MinimumLevel.Debug( )
+                .MinimumLevel.Override( "Microsoft", LogEventLevel.Warning )
+                .MinimumLevel.Override( "SpotifyAPI.Web", Config.LogLevel )
+                .MinimumLevel.Override( "Telegram.Bot", Config.LogLevel )
+                .MinimumLevel.Override( "Yandex.Music.Api", LogEventLevel.Information )
+                .Enrich.FromLogContext( )
+                .WriteTo.File( $"{Config.LogPath}{DateTime.Now:yyyy-MM-dd-hh_mm_ss}.log",
+                    LogEventLevel.Debug )
+                .WriteTo.Console( LogEventLevel.Debug )
+                .CreateLogger( );
 
             Log.Information( "Загрузка парсеров..." );
-            
+
             _parsers = new Dictionary<string, IParser>
             {
-                { "yandex", new YmParser( ) }, 
-                { "spotify", new SpotifyParser( ) }
+                {"yandex", new YmParser( )},
+                {"spotify", new SpotifyParser( )}
             };
-            
+
             Log.Information( $"Загружено {_parsers.Count} парсера(ов)" );
 
             Log.Information( "Подключение к боту..." );
@@ -78,16 +77,13 @@ namespace ConverterBot
             }
         }
 
+
         private static async void BotOnMessage( object? Sender, MessageEventArgs E )
         {
-            
-            if ( !( Sender is TelegramBotClient ) )
-            {
-                throw new ApplicationException( "Ошибка при отправке сообщения." );
-            }
+            if ( !( Sender is TelegramBotClient ) ) throw new ApplicationException( "Ошибка при отправке сообщения." );
 
             var botClient = ( TelegramBotClient ) Sender;
-            
+
             switch ( E.Message.Type )
             {
                 case MessageType.Text:
@@ -97,13 +93,13 @@ namespace ConverterBot
                                      $"от {E.Message.From.FirstName} " +
                                      $"{E.Message.From.LastName}. " +
                                      $"Текст: {E.Message.Text}" );
-                    
+
                     IParser parser;
-                    IMusic parsedMusic;
+                    IMusic  parsedMusic;
 
                     var uri = uriRegex.Match( E.Message.Text ).Value;
 
-                    if ( !string.IsNullOrWhiteSpace(uri) )
+                    if ( !string.IsNullOrWhiteSpace( uri ) )
                         try
                         {
                             parser = _parsers.First( _ => E.Message.Text.Contains( _.Key ) ).Value;
@@ -122,21 +118,22 @@ namespace ConverterBot
                             await botClient.SendTextMessageAsync( E.Message.Chat.Id,
                                 "Музыка не распознана" );
                         }
+
                     break;
                 }
-                    
+
                 case MessageType.VideoNote:
                 {
-                    Log.Information( $"Получено видеосообщение в чате " +
+                    Log.Information( "Получено видеосообщение в чате " +
                                      $"{E.Message.Chat.Id} " +
                                      $" от {E.Message.From.FirstName} " +
                                      $"{E.Message.From.LastName}. " +
                                      $"Текст: {E.Message.Text}" );
-                    
+
                     var selectedStickerId = StickerIds.OrderBy( x => Guid.NewGuid( ) ).FirstOrDefault( );
-                    await botClient.SendStickerAsync( E.Message.Chat.Id, 
-                                                new InputOnlineFile( selectedStickerId ) );
-                    
+                    await botClient.SendStickerAsync( E.Message.Chat.Id,
+                        new InputOnlineFile( selectedStickerId ) );
+
                     break;
                 }
             }
