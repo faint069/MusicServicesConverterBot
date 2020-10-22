@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using ConverterBot.Models;
@@ -23,10 +24,10 @@ namespace ConverterBot.Parsers
                 string resp = wc.DownloadString( Uri );
 
                 Uri = Regex.Match( resp, HTMLPattern ).Value.TrimEnd('"');
-                if ( Uri.Contains( "?" ) )
-                {
-                    Uri = Uri.Split( "?" ).First( );
-                }
+            }
+            if ( Uri.Contains( "?" ) )
+            {
+                Uri = Uri.Split( "?" ).First( );
             }
             
             string[] uriParts = Uri.Split( "/" );
@@ -65,8 +66,8 @@ namespace ConverterBot.Parsers
             if ( uriParts.Contains( "artist" ) )
             {
                 FullArtist sArtist = Clients.SpotifyClient.Artists.Get( uriParts.Last( ) ).Result;
-                Paging<SimpleAlbum> sArtistAlbums = Clients.SpotifyClient.Artists.GetAlbums( uriParts.Last( ) ).Result;
-                SimpleAlbum sSampleAlbum = sArtistAlbums.Items?.First( );
+                List<SimpleAlbum>? sArtistAlbums = Clients.SpotifyClient.Artists.GetAlbums( uriParts.Last( ) ).Result.Items;
+                SimpleAlbum sSampleAlbum = sArtistAlbums?.First( );
 
                 Album sampleAlbum = new Album( sSampleAlbum?.Name,
                                                    sArtist.Name,
@@ -75,6 +76,7 @@ namespace ConverterBot.Parsers
  
                 return new Artist( sArtist.Name,
                                    sampleAlbum,
+                                   null,
                            sArtist.Id );
             }
 
