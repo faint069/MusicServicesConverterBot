@@ -78,9 +78,9 @@ namespace ConverterBot.Models
             }
 
             Album otherAlbum = ( Album ) other;
-            return string.Equals( _title, otherAlbum.Title,  StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(_artist, otherAlbum.Artist, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(_year,   otherAlbum.Year,   StringComparison.OrdinalIgnoreCase);
+            return ( _title.Contains( otherAlbum.Title, StringComparison.OrdinalIgnoreCase ) ||
+                     otherAlbum.Title.Contains( _title, StringComparison.OrdinalIgnoreCase) ) &&
+                   string.Equals( _artist, otherAlbum.Artist, StringComparison.OrdinalIgnoreCase );
         }
     }
 }

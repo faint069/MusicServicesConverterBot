@@ -68,8 +68,10 @@ namespace ConverterBot.Models
             }
             
             Track otherTrack = ( Track ) other;
-            return string.Equals( _title,  otherTrack.Title,  StringComparison.OrdinalIgnoreCase ) &&
-                   string.Equals( _album,  otherTrack.Album,  StringComparison.OrdinalIgnoreCase ) &&
+            return ( _title.Contains( otherTrack.Title, StringComparison.OrdinalIgnoreCase ) ||
+                     otherTrack.Title.Contains( _title, StringComparison.OrdinalIgnoreCase ) ) &&
+                   ( _album.Contains( otherTrack.Album, StringComparison.OrdinalIgnoreCase ) ||
+                     otherTrack.Album.Contains( _album, StringComparison.OrdinalIgnoreCase ) ) &&
                    string.Equals( _artist, otherTrack.Artist, StringComparison.OrdinalIgnoreCase );
         }
     }
