@@ -62,7 +62,7 @@ namespace ConverterBot.Models
         /// <returns></returns>
         public string QueryString( )
         {
-            return $"{_artist} {_title}";
+            return $"{_title}";
         }
 
         public override string ToString( )
