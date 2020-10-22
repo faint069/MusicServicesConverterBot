@@ -53,8 +53,6 @@ namespace ConverterBot
                 .WriteTo.Console( LogEventLevel.Debug )
                 .CreateLogger( );
 
-            Log.Information( "Загрузка парсеров и билдеров..." );
-
             _parsers = new Dictionary<string, IParser>
             {
                 {"yandex", new YmParser( )},
@@ -66,16 +64,14 @@ namespace ConverterBot
                 {"spotify", new SpotifyBuilder(  )}
             };
 
-            Log.Information( $"Загружено {_parsers.Count} парсера(ов) и {_builders.Count} билдера(ов)" );
-
-            Log.Information( "Подключение к боту..." );
+            Log.Information( "Connecting to bot..." );
 
             TelegramBotClient botClient = new TelegramBotClient( Config.TelegramToken );
 
             botClient.OnMessage += BotOnMessage;
             botClient.StartReceiving( );
 
-            Log.Information( "Подключение к боту успешно" );
+            Log.Information( "Connected to bot successfully" );
 
             while ( true )
             {
@@ -94,11 +90,11 @@ namespace ConverterBot
             {
                 case MessageType.Text:
                 {
-                    Log.Information( $"Получено текстовое сообщение в чате " +
+                    Log.Information( $"Text Message recieved in chat: " +
                                      $"{E.Message.Chat.Id} " +
-                                     $"от {E.Message.From.FirstName} " +
+                                     $"from: {E.Message.From.FirstName} " +
                                      $"{E.Message.From.LastName}. " +
-                                     $"Текст: {E.Message.Text}" );
+                                     $"Text: {E.Message.Text}" );
 
                     IParser parser;
                     IBuilder builder;
@@ -112,20 +108,20 @@ namespace ConverterBot
                             parser = _parsers.First( _ => E.Message.Text.Contains( _.Key ) ).Value;
                             parsedMusic = parser.ParseUri( E.Message.Text );
                             await botClient.SendTextMessageAsync( E.Message.Chat.Id, parsedMusic.ToString( ) );
-                            _builders.TryGetValue( "yandex", out builder );
+                            builder = _builders.First( _ => !E.Message.Text.Contains( _.Key ) ).Value;;
                             string reply = builder.SearchMusic( parsedMusic ) ?? "Не получилось найти музыку";
 
                             await botClient.SendTextMessageAsync( E.Message.Chat.Id, reply );
                         }
                         catch ( InvalidOperationException )
                         {
-                            Log.Error( "Получена ссылка, но парсер не найден" );
+                            Log.Error( "Uri received, but parser not found" );
                             await botClient.SendTextMessageAsync( E.Message.Chat.Id,
                                 "Либо это не ссылка на музыку, либо я не умею работать с этим сервисом" );
                         }
                         catch ( NullReferenceException )
                         {
-                            Log.Error( "Парсер не справился" );
+                            Log.Error( "Parser failed" );
                             await botClient.SendTextMessageAsync( E.Message.Chat.Id,
                                 "Музыка не распознана" );
                         }
@@ -135,12 +131,11 @@ namespace ConverterBot
 
                 case MessageType.VideoNote:
                 {
-                    Log.Information( "Получено видеосообщение в чате " +
+                    Log.Information( "Videomessage received: " +
                                      $"{E.Message.Chat.Id} " +
-                                     $" от {E.Message.From.FirstName} " +
-                                     $"{E.Message.From.LastName}. " +
-                                     $"Текст: {E.Message.Text}" );
-
+                                     $"from: {E.Message.From.FirstName} " +
+                                     $"{E.Message.From.LastName}.");
+                    
                     var selectedStickerId = StickerIds.OrderBy( x => Guid.NewGuid( ) ).FirstOrDefault( );
                     await botClient.SendStickerAsync( E.Message.Chat.Id,
                         new InputOnlineFile( selectedStickerId ) );
