@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using ConverterBot.Builders;
 using ConverterBot.Models;
 using ConverterBot.Parsers;
 using Serilog;
@@ -18,6 +19,7 @@ namespace ConverterBot
     class Program
     {
         private static Dictionary<string, IParser> _parsers;
+        private static Dictionary<string, IBuilder> _builders;
         
         private static Regex uriRegex = new Regex(@"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)");
         
@@ -31,6 +33,7 @@ namespace ConverterBot
             "CAACAgIAAxkBAAIFFl-Jl4wCWT6gvwwAAe_uBeJMbnOscgACFwMAAs-71A59adsQhEjPrRsE",
             "CAACAgIAAxkBAAIFF1-Jl5fJ4fQtLx9ss6PRp30Z7rNjAAIbAwACz7vUDsIc3bMyqex1GwQ"
         };
+
 
 
         private static void Main( )
@@ -52,15 +55,20 @@ namespace ConverterBot
                 .WriteTo.Console( LogEventLevel.Debug )
                 .CreateLogger( );
 
-            Log.Information( "Загрузка парсеров..." );
+            Log.Information( "Загрузка парсеров и билдеров..." );
 
             _parsers = new Dictionary<string, IParser>
             {
                 {"yandex", new YmParser( )},
                 {"spotify", new SpotifyParser( )}
             };
+            _builders = new Dictionary<string, IBuilder>
+            {
+                {"yandex" , new YmBuilder(  )},
+                {"spotify", new SpotifyBuilder(  )}
+            };
 
-            Log.Information( $"Загружено {_parsers.Count} парсера(ов)" );
+            Log.Information( $"Загружено {_parsers.Count} парсера(ов) и {_builders.Count} билдера(ов)" );
 
             Log.Information( "Подключение к боту..." );
 
@@ -95,6 +103,7 @@ namespace ConverterBot
                                      $"Текст: {E.Message.Text}" );
 
                     IParser parser;
+                    IBuilder builder;
                     IMusic  parsedMusic;
 
                     var uri = uriRegex.Match( E.Message.Text ).Value;
@@ -105,8 +114,18 @@ namespace ConverterBot
                             parser = _parsers.First( _ => E.Message.Text.Contains( _.Key ) ).Value;
                             parsedMusic = parser.ParseUri( E.Message.Text );
                             await botClient.SendTextMessageAsync( E.Message.Chat.Id, parsedMusic.ToString( ) );
+                            _builders.TryGetValue( "yandex", out builder );
+                            string reply = builder.SearchMusic( parsedMusic );
+                            if ( !string.IsNullOrWhiteSpace( reply ) )
+                            {
+                                await botClient.SendTextMessageAsync( E.Message.Chat.Id, reply );
+                            }
+                            else
+                            {
+                                await botClient.SendTextMessageAsync( E.Message.Chat.Id, "Не получилось найти музыку" );
+                            }
                         }
-                        catch ( InvalidOperationException exception )
+                        catch ( InvalidOperationException )
                         {
                             Log.Error( "Получена ссылка, но парсер не найден" );
                             await botClient.SendTextMessageAsync( E.Message.Chat.Id,
