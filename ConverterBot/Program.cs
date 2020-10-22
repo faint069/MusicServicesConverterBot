@@ -34,8 +34,6 @@ namespace ConverterBot
             "CAACAgIAAxkBAAIFF1-Jl5fJ4fQtLx9ss6PRp30Z7rNjAAIbAwACz7vUDsIc3bMyqex1GwQ"
         };
 
-
-
         private static void Main( )
         {
             if ( !Directory.Exists( Config.LogPath ) )
@@ -115,15 +113,9 @@ namespace ConverterBot
                             parsedMusic = parser.ParseUri( E.Message.Text );
                             await botClient.SendTextMessageAsync( E.Message.Chat.Id, parsedMusic.ToString( ) );
                             _builders.TryGetValue( "yandex", out builder );
-                            string reply = builder.SearchMusic( parsedMusic );
-                            if ( !string.IsNullOrWhiteSpace( reply ) )
-                            {
-                                await botClient.SendTextMessageAsync( E.Message.Chat.Id, reply );
-                            }
-                            else
-                            {
-                                await botClient.SendTextMessageAsync( E.Message.Chat.Id, "Не получилось найти музыку" );
-                            }
+                            string reply = builder.SearchMusic( parsedMusic ) ?? "Не получилось найти музыку";
+
+                            await botClient.SendTextMessageAsync( E.Message.Chat.Id, reply );
                         }
                         catch ( InvalidOperationException )
                         {

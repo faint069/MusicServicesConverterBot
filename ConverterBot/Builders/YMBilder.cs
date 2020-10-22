@@ -17,9 +17,9 @@ namespace ConverterBot.Builders
             {
                 case Track _:
                 {
-                    var response = Clients.YandexMusicClient.Search.Track( Clients.YAusthStorage, 
-                                                                         musicToSearch.QueryString( ) )
-                                                                                  .Result;
+                    YSearch response = Clients.YandexMusicClient.Search.Track( Clients.YAusthStorage, 
+                                                                      musicToSearch.QueryString( ) )
+                                                                               .Result;
                     foreach ( YSearchTrackModel ymTrack in response.Tracks.Results )
                     {
                         if ( musicToSearch.Equals( new Track( ymTrack.Title,
@@ -35,9 +35,9 @@ namespace ConverterBot.Builders
                 }
                 case Album _:
                 {
-                    var response = Clients.YandexMusicClient.Search.Albums( Clients.YAusthStorage, 
-                                                                         musicToSearch.QueryString( ) )
-                                                                                   .Result;
+                    YSearch response = Clients.YandexMusicClient.Search.Albums( Clients.YAusthStorage, 
+                                                                      musicToSearch.QueryString( ) )
+                                                                                .Result;
                     foreach ( YSearchAlbumModel ymAlbum in response.Albums.Results )
                     {
                         if ( musicToSearch.Equals( new Album( ymAlbum.Title,
@@ -96,6 +96,5 @@ namespace ConverterBot.Builders
             //https://music.yandex.ru/artist/36800
             return string.Concat( @"https://music.yandex.ru/artist/" , artist.Id  );
         }
-        
     }
 }
