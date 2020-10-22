@@ -13,7 +13,7 @@ namespace ConverterBot
 
         static Clients( )
         {
-            Log.Information( "Подключение к Spotify..." );
+            Log.Information( "Connecting to Spotify..." );
 
             SpotifyClientConfig spotify_config = SpotifyClientConfig.CreateDefault( )
                                                                     .WithAuthenticator(
@@ -22,15 +22,15 @@ namespace ConverterBot
                                                                             Config.SotifyClientSecret ) );
             _spotify_client = new SpotifyClient( spotify_config );
 
-            Log.Information( "Подключение к Spotify успешно" );
+            Log.Information( "Connection to Spotify successful" );
 
-            Log.Information( "Подключение к Yandex Music..." );
+            Log.Information( "Connecting to Yandex Music..." );
 
             _yAusthStorage = new AuthStorage(  );
             _yandex_music_client = new YandexMusicApi( );
             _yandex_music_client.User.Authorize( _yAusthStorage, Config.YMLogin, Config.YMPassword );
             
-            Log.Information( "Подключение к Yandex Music успешно" );
+            Log.Information( "Connection to Yandex Music successful" );
         }
 
         public static SpotifyClient  SpotifyClient     => _spotify_client;
