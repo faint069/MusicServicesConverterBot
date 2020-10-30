@@ -55,13 +55,15 @@ namespace ConverterBot
 
             _parsers = new Dictionary<string, IParser>
             {
-                {"yandex", new YmParser( )},
-                {"spotify", new SpotifyParser( )}
+                {Services.YandexMusic, new YmParser( )},
+                {Services.Spotify,     new SpotifyParser( )}
             };
+            
             _builders = new Dictionary<string, IBuilder>
             {
-                {"yandex" , new YmBuilder(  )},
-                {"spotify", new SpotifyBuilder(  )}
+                {Services.YandexMusic,  new YmBuilder(  )},
+                {Services.Spotify,      new SpotifyBuilder(  )},
+                {Services.YoutubeMusic, new YoutubeMusicBuilder(  )}
             };
 
             Log.Information( "Connecting to bot..." );
