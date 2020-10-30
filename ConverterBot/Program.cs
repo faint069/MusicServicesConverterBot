@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,12 +18,12 @@ using Telegram.Bot.Types.InputFiles;
 
 namespace ConverterBot
 {
-    class Program
+    static class Program
     {
-        private static Dictionary<string, IParser> _parsers;
-        private static Dictionary<string, IBuilder> _builders;
+        private static Dictionary<string, IParser> _parsers = null!;
+        private static Dictionary<string, IBuilder> _builders = null!;
         
-        private static Regex uriRegex = new Regex(@"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)");
+        private static readonly Regex UriRegex = new Regex(@"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)");
         
         private static void Main( )
         {
@@ -72,49 +73,45 @@ namespace ConverterBot
         }
 
 
-        private static async void BotOnMessage( object? Sender, MessageEventArgs E )
+        private static async void BotOnMessage( object? sender, MessageEventArgs e )
         {
-            if ( !( Sender is TelegramBotClient ) ) throw new ApplicationException( "Ошибка при отправке сообщения." );
+            if ( !( sender is TelegramBotClient ) ) throw new ApplicationException( "Ошибка при отправке сообщения." );
 
-            var botClient = ( TelegramBotClient ) Sender;
+            var botClient = ( TelegramBotClient ) sender;
 
-            switch ( E.Message.Type )
+            switch ( e.Message.Type )
             {
                 case MessageType.Text:
                 {
                     Log.Information( $"Text Message recieved in chat: " +
-                                     $"{E.Message.Chat.Id} " +
-                                     $"from: {E.Message.From.FirstName} " +
-                                     $"{E.Message.From.LastName}. " +
-                                     $"Text: {E.Message.Text}" );
+                                     $"{e.Message.Chat.Id} " +
+                                     $"from: {e.Message.From.FirstName} " +
+                                     $"{e.Message.From.LastName}. " +
+                                     $"Text: {e.Message.Text}" );
 
-                    IParser parser;
-                    IBuilder builder;
-                    IMusic  parsedMusic;
-
-                    var uri = uriRegex.Match( E.Message.Text ).Value;
+                    var uri = UriRegex.Match( e.Message.Text ).Value;
 
                     if ( !string.IsNullOrWhiteSpace( uri ) )
                         try
                         {
-                            parser = _parsers.First( _ => E.Message.Text.Contains( _.Key ) ).Value;
-                            parsedMusic = parser.ParseUri( E.Message.Text );
-                            await botClient.SendTextMessageAsync( E.Message.Chat.Id, parsedMusic.ToString( ) );
-                            builder = _builders.First( _ => !E.Message.Text.Contains( _.Key ) ).Value;;
+                            IParser parser = _parsers.First( _ => e.Message.Text.Contains( _.Key ) ).Value;
+                            IMusic  parsedMusic = parser.ParseUri( e.Message.Text );
+                            await botClient.SendTextMessageAsync( e.Message.Chat.Id, parsedMusic.ToString( ) );
+                            IBuilder builder = _builders.First( _ => !e.Message.Text.Contains( _.Key ) ).Value;
                             string reply = builder.SearchMusic( parsedMusic ) ?? "Не получилось найти музыку";
 
-                            await botClient.SendTextMessageAsync( E.Message.Chat.Id, reply );
+                            await botClient.SendTextMessageAsync( e.Message.Chat.Id, reply );
                         }
                         catch ( InvalidOperationException )
                         {
                             Log.Error( "Uri received, but parser not found" );
-                            await botClient.SendTextMessageAsync( E.Message.Chat.Id,
+                            await botClient.SendTextMessageAsync( e.Message.Chat.Id,
                                 "Либо это не ссылка на музыку, либо я не умею работать с этим сервисом" );
                         }
                         catch ( NullReferenceException )
                         {
                             Log.Error( "Parser failed" );
-                            await botClient.SendTextMessageAsync( E.Message.Chat.Id,
+                            await botClient.SendTextMessageAsync( e.Message.Chat.Id,
                                 "Музыка не распознана" );
                         }
 
@@ -124,11 +121,11 @@ namespace ConverterBot
                 case MessageType.VideoNote:
                 {
                     Log.Information( "Videomessage received: " +
-                                     $"{E.Message.Chat.Id} " +
-                                     $"from: {E.Message.From.FirstName} " +
-                                     $"{E.Message.From.LastName}.");
+                                     $"{e.Message.Chat.Id} " +
+                                     $"from: {e.Message.From.FirstName} " +
+                                     $"{e.Message.From.LastName}.");
                     
-                    await botClient.SendStickerAsync( E.Message.Chat.Id,
+                    await botClient.SendStickerAsync( e.Message.Chat.Id,
                                                 new InputOnlineFile( Stickers.GetRandomSmickingBotSticker(  ) ) );
 
                     break;
