@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ConverterBot.Builders;
+using ConverterBot.Misc;
 using ConverterBot.Models;
 using ConverterBot.Parsers;
 using Serilog;
@@ -23,17 +24,6 @@ namespace ConverterBot
         
         private static Regex uriRegex = new Regex(@"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)");
         
-        private static readonly List<string> StickerIds = new List<string>
-        {
-            "CAACAgQAAxkBAAIFDV-Jls0xIhjVz1MD2hTNNfhmQpD9AAIrAAOYNXECYh2sqTkGNV0bBA",
-            "CAACAgQAAxkBAAIFDl-JltHZEOnaDE9rcFE8HyOmDkVAAAKpBgACb2HkAb0rq2EWtocjGwQ",
-            "CAACAgIAAxkBAAIFEV-JlvnufJxc7h5GbU6DNb6faJiPAAJXZgACns4LAAEwO23SmGu_oBsE",
-            "CAACAgQAAxkBAAIFEl-Jlxqh4qAZEiMK1uGKNGvlULrOAAITAAOYNXECneTXFMXI1zIbBA",
-            "CAACAgQAAxkBAAIFE1-JlyBE3PGLz99jlIHZqPWhZahIAAIhAAOYNXECQ1DAYZ5umEQbBA",
-            "CAACAgIAAxkBAAIFFl-Jl4wCWT6gvwwAAe_uBeJMbnOscgACFwMAAs-71A59adsQhEjPrRsE",
-            "CAACAgIAAxkBAAIFF1-Jl5fJ4fQtLx9ss6PRp30Z7rNjAAIbAwACz7vUDsIc3bMyqex1GwQ"
-        };
-
         private static void Main( )
         {
             if ( !Directory.Exists( Config.LogPath ) )
@@ -138,9 +128,8 @@ namespace ConverterBot
                                      $"from: {E.Message.From.FirstName} " +
                                      $"{E.Message.From.LastName}.");
                     
-                    var selectedStickerId = StickerIds.OrderBy( x => Guid.NewGuid( ) ).FirstOrDefault( );
                     await botClient.SendStickerAsync( E.Message.Chat.Id,
-                        new InputOnlineFile( selectedStickerId ) );
+                                                new InputOnlineFile( Stickers.GetRandomSmickingBotSticker(  ) ) );
 
                     break;
                 }
