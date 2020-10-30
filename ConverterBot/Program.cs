@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ConverterBot.Builders;
@@ -15,6 +16,7 @@ using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConverterBot
 {
@@ -62,6 +64,7 @@ namespace ConverterBot
             TelegramBotClient botClient = new TelegramBotClient( Config.TelegramToken );
 
             botClient.OnMessage += BotOnMessage;
+            botClient.OnCallbackQuery += BotOnInlineQuery;
             botClient.StartReceiving( );
 
             Log.Information( "Connected to bot successfully" );
@@ -71,6 +74,7 @@ namespace ConverterBot
                 Thread.Sleep( 10000 );
             }
         }
+
 
 
         private static async void BotOnMessage( object? sender, MessageEventArgs e )
@@ -89,6 +93,12 @@ namespace ConverterBot
                                      $"{e.Message.From.LastName}. " +
                                      $"Text: {e.Message.Text}" );
 
+                    if ( e.Message.Text.StartsWith( '/' ) )
+                    {
+                            botClient.SendTextMessageAsync( e.Message.Chat.Id, "Выберите первый сервис", replyMarkup: ProcessCommand( e.Message.Text ));
+                        return;
+                    }
+                    
                     var uri = UriRegex.Match( e.Message.Text ).Value;
 
                     if ( !string.IsNullOrWhiteSpace( uri ) )
@@ -131,6 +141,29 @@ namespace ConverterBot
                     break;
                 }
             }
+        }
+
+        private static InlineKeyboardMarkup ProcessCommand( string messageText )
+        {
+            if ( messageText == "/set_services" )
+            {
+                List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
+                for ( int i = 0; i < 3; i++ )
+                {
+                    var button = new InlineKeyboardButton(  );
+                    button.Text = i.ToString();
+                    button.CallbackData = "set_services " + i;
+                    buttons.Add( button );
+                }
+                var keyboard = new InlineKeyboardMarkup( buttons );
+                return keyboard;
+            }
+
+            return null;
+        }
+        private static void BotOnInlineQuery( object? sender, CallbackQueryEventArgs callbackQueryEventArgs )
+        {
+            var a = callbackQueryEventArgs;
         }
     }
 }
