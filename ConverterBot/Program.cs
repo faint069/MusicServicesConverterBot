@@ -1,32 +1,13 @@
-﻿#nullable enable
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Text.RegularExpressions;
 using System.Threading;
-using ConverterBot.Builders;
-using ConverterBot.Misc;
-using ConverterBot.Models;
-using ConverterBot.Parsers;
 using Serilog;
 using Serilog.Events;
-using Telegram.Bot;
-using Telegram.Bot.Args;
-using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConverterBot
 {
     static class Program
     {
-        private static Dictionary<string, IParser> _parsers = null!;
-        private static Dictionary<string, IBuilder> _builders = null!;
-        
-        public static TelegramBotClient MyBbot;
-        
         private static void Main( )
         {
             if ( !Directory.Exists( Config.LogPath ) )
@@ -46,7 +27,7 @@ namespace ConverterBot
                 .WriteTo.Console( LogEventLevel.Debug )
                 .CreateLogger( );
             
-            Bot.Client.StartReceiving(  );
+            Bot.Bot.Client.StartReceiving(  );
 
             while ( true )
             {
