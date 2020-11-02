@@ -28,7 +28,9 @@ namespace ConverterBot.Bot
             {Services.Spotify,      new SpotifyBuilder(  )},
             {Services.YoutubeMusic, new YoutubeMusicBuilder(  )}
         };
+        private static Dictionary<long, SetServicesDialog> _dialogs = new Dictionary<long, SetServicesDialog>();
 
+        
         public static void BotOnMessage( object? sender, MessageEventArgs e )
         { 
             switch ( e.Message.Type )
@@ -45,10 +47,6 @@ namespace ConverterBot.Bot
             };
         }
         
-        public static void BotOnInlineQuery( object? sender, CallbackQueryEventArgs callbackQueryEventArgs )
-        {
-            var a = callbackQueryEventArgs;
-        }
 
         private static void HandleCommon( Message message )
         {
@@ -75,7 +73,7 @@ namespace ConverterBot.Bot
                     switch ( message.Entities[i].Type )
                     {
                         case MessageEntityType.BotCommand:
-                            ProcessCommand( message.EntityValues.ElementAt( i ) );
+                            ProcessCommand( message.EntityValues.ElementAt( i ), message.Chat.Id );
                             break;
                         case MessageEntityType.Url:
                             ProcessUri( message.EntityValues.ElementAt( i ), message.Chat.Id );
@@ -102,7 +100,7 @@ namespace ConverterBot.Bot
 
         private static void ProcessUri( string uri, long chatId )
         {
-            if ( !string.IsNullOrWhiteSpace( uri ) )
+            if ( Clients.ClientsList.Any(_ => uri.Contains( _ )) )
             {
                 try
                 {
@@ -124,24 +122,44 @@ namespace ConverterBot.Bot
                 {
                     Log.Error( "Parser failed" );
                     Bot.Client.SendTextMessageAsync( chatId,
-                        "Музыка не распознана" );
+                                                     "Музыка не распознана" );
 
                 }
             }
         }
-        private static void ProcessCommand( string command )
+        private static void ProcessCommand( string command, long chatId )
         {
             if ( command == "/set_services" )
             {
-                List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
-                for ( int i = 0; i < 3; i++ )
+                if ( _dialogs.ContainsKey( chatId ) )
                 {
-                    var button = new InlineKeyboardButton(  );
-                    button.Text = i.ToString();
-                    button.CallbackData = "set_services " + i;
-                    buttons.Add( button );
+                    _dialogs.Remove( chatId );
                 }
-                var keyboard = new InlineKeyboardMarkup( buttons );
+
+                var dialog = new SetServicesDialog( chatId );
+                
+                dialog.PerformStep( );
+
+                _dialogs.TryAdd( chatId, dialog );
+
+            }
+        }
+        public static void BotOnInlineQuery( object? sender, CallbackQueryEventArgs callbackQueryEventArgs )
+        {
+            if ( callbackQueryEventArgs.CallbackQuery.Data.StartsWith( "set_command" ) )
+            {
+                long chatId = callbackQueryEventArgs.CallbackQuery.Message.Chat.Id;
+                string service = callbackQueryEventArgs.CallbackQuery.Data.Split( '|' ).Last( );
+                SetServicesDialog dialog;
+                if ( _dialogs.TryGetValue( chatId, out dialog ) )
+                {
+                    dialog.SelectedServices.Add( service );
+                    dialog.PerformStep(  );
+                    if ( dialog.IsOver )
+                    {
+                        _dialogs.Remove( chatId );
+                    }
+                }
             }
         }
     }

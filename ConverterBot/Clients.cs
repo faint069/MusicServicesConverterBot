@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using System.Collections.Generic;
+using Serilog;
 using SpotifyAPI.Web;
 using Yandex.Music.Api;
 using Yandex.Music.Api.Common;
@@ -32,6 +33,16 @@ namespace ConverterBot
             
             Log.Information( "Connection to Yandex Music successful" );
         }
+        
+        /// <summary>
+        /// Список всех поддерживаемых музыкальных сервисов
+        /// </summary>
+        public static readonly List<string> ClientsList = new List<string>
+        {
+            "music.yandex", 
+            "spotify", 
+            "music.youtube"
+        };
 
         public static SpotifyClient  SpotifyClient     => _spotify_client;
 

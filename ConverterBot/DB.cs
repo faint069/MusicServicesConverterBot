@@ -1,4 +1,6 @@
-﻿using ConverterBot.Models;
+﻿using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
+using ConverterBot.Models;
 using LiteDB;
 
 namespace ConverterBot
@@ -21,6 +23,12 @@ namespace ConverterBot
         public static void SetServicesForChat( long chatId, string[] services )
         {
             var collection = Database.GetCollection<ServicesInChat>( "ServicesInChats" );
+            
+            if ( collection.Exists( _ => _.ChatId == chatId ) )
+            {
+                collection.DeleteMany( _ => _.ChatId == chatId );
+            }
+            
             collection.Insert( new ServicesInChat( chatId, services ) );
         }
     }
