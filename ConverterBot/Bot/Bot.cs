@@ -5,14 +5,14 @@ namespace ConverterBot.Bot
 {
     public static class Bot
     {
-        public static TelegramBotClient Client;
+        public static readonly TelegramBotClient Client;
 
         static Bot( )
         {
-            Client = new TelegramBotClient( Config.TelegramToken );
-            
             Log.Information( "Connecting to bot..." );
 
+            Client = new TelegramBotClient( Config.TelegramToken );
+            
             Client.OnMessage += MessageHandler.BotOnMessage;
             Client.OnCallbackQuery += MessageHandler.BotOnInlineQuery;
 
