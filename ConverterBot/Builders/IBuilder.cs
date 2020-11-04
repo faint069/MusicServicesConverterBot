@@ -2,13 +2,13 @@
 
 namespace ConverterBot.Builders
 {
-    public interface IBuilder
-    {
-        /// <summary>
-        /// Вщзвращает Uri на указанную музыку в своем сервисе
-        /// </summary>
-        /// <param name="musicToSearch">Музыка которую нужно искать</param>
-        /// <returns></returns>
-        public string SearchMusic( IMusic musicToSearch );
-    }
+  public interface IBuilder
+  {
+    /// <summary>
+    /// Вщзвращает Uri на указанную музыку в своем сервисе
+    /// </summary>
+    /// <param name="musicToSearch">Музыка которую нужно искать</param>
+    /// <returns></returns>
+    public string SearchMusic( IMusic musicToSearch );
+  }
 }
