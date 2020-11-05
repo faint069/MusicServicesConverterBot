@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ConverterBot.Builders;
+using ConverterBot.Localization;
 using ConverterBot.Misc;
 using ConverterBot.Models;
 using ConverterBot.Parsers;
@@ -10,7 +11,6 @@ using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConverterBot.Bot
 {
@@ -73,7 +73,7 @@ namespace ConverterBot.Bot
           switch ( message.Entities[i].Type )
           {
             case MessageEntityType.BotCommand:
-              ProcessCommand( message.EntityValues.ElementAt( i ), message.Chat.Id );
+              ProcessCommand( message.EntityValues.ElementAt( i ), message );
               break;
             case MessageEntityType.Url:
               ProcessUri( message.EntityValues.ElementAt( i ), message.Chat.Id );
@@ -127,21 +127,28 @@ namespace ConverterBot.Bot
         }
       }
     }
-    private static void ProcessCommand( string command, long chatId )
+    private static void ProcessCommand( string command, Message message )
     {
-      if ( command == "/set_services" )
+      switch ( command )
       {
-        if ( _dialogs.ContainsKey( chatId ) )
+        case "/start":
+          Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.GreetingMessage
+                                                                 .GetLocalized( message.From.LanguageCode ));
+          break;
+        case "/set_services":
         {
-          _dialogs.Remove( chatId );
-        }
+          if ( _dialogs.ContainsKey( message.Chat.Id ) )
+          {
+            _dialogs.Remove( message.Chat.Id );
+          }
 
-        var dialog = new SetServicesDialog( chatId );
+          var dialog = new SetServicesDialog( message.Chat.Id );
                 
-        dialog.PerformStep( );
+          dialog.PerformStep( );
 
-        _dialogs.TryAdd( chatId, dialog );
-
+          _dialogs.TryAdd( message.Chat.Id, dialog );
+          break;
+        }
       }
     }
     public static void BotOnInlineQuery( object? sender, CallbackQueryEventArgs callbackQueryEventArgs )

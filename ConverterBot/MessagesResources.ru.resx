@@ -1,0 +1,17 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="HelloMessage" xml:space="preserve">
+        <value>Привет! Я умею обрабатывать ссылки из стриминговых сервисов. Мне можно прислать ссылку на трек, альбом или артиста, а я постараюсь ответить ссылкой на эту же музыку в другом сервисе. На данный момент я умею работать с Яндекс Музыкой и Спотифай. Жду ссылки.</value>
+    </data>
+</root>

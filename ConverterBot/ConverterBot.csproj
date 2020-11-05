@@ -29,4 +29,19 @@
       <ProjectReference Include="..\..\Yandex.Music.Api\Yandex.Music.Api\Yandex.Music.Api.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="MessagesResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>MessagesResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="MessagesResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>MessagesResources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>
