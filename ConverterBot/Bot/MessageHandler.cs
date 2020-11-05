@@ -11,6 +11,7 @@ using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConverterBot.Bot
 {
@@ -156,6 +157,11 @@ namespace ConverterBot.Bot
       if ( callbackQueryEventArgs.CallbackQuery.Data.StartsWith( "set_command" ) )
       {
         long chatId = callbackQueryEventArgs.CallbackQuery.Message.Chat.Id;
+        
+        Bot.Client.EditMessageReplyMarkupAsync( new ChatId( chatId ),
+                                                callbackQueryEventArgs.CallbackQuery.Message.MessageId, 
+                                                InlineKeyboardMarkup.Empty( ) );
+        
         string service = callbackQueryEventArgs.CallbackQuery.Data.Split( '|' ).Last( );
         SetServicesDialog dialog;
         if ( _dialogs.TryGetValue( chatId, out dialog ) )
