@@ -2,6 +2,10 @@
 {
   public class ServicesInChat
   {
+    public ServicesInChat( )
+    {
+    }
+
     public long ChatId { get; }
     public string[] Services { get; }
 
