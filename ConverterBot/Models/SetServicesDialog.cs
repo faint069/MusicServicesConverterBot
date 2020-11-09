@@ -1,17 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ConverterBot.Localization;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConverterBot.Models
 {
   public class SetServicesDialog: IDialog
   {
-    private readonly string[] _messages =
-    {
-      "Выберите первый сервис",
-      "Выберите второй сервис",
-      "Настройка завершена"
-    };
+    private readonly string[] _messages = new string[3];
 
     private InlineKeyboardMarkup Keyboard
     {
@@ -32,13 +28,18 @@ namespace ConverterBot.Models
       }
     }
 
-    public SetServicesDialog( long chatId )
+    public SetServicesDialog( long chatId, string culture = "en" )
     {
       Step = 0;
       MaxSteps = 3;
       ChatId = chatId;
       IsOver = false;
-      SelectedServices = new List<string>();
+      SelectedServices = new List<string>( );
+      
+      _messages[0] = Messages.SetServicesFirst.GetLocalized( culture );
+      _messages[1] = Messages.SetServicesSecond.GetLocalized( culture );
+      _messages[2] = Messages.SetServicesThird.GetLocalized( culture );
+
     }
 
     public long ChatId { get; }

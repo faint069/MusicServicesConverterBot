@@ -27,4 +27,13 @@
     <data name="ServicesInChatMessage" xml:space="preserve">
         <value />
     </data>
+    <data name="SetServicesFirstMessage" xml:space="preserve">
+        <value />
+    </data>
+    <data name="SetServicesSecondMessage" xml:space="preserve">
+        <value />
+    </data>
+    <data name="SetServicesThirdMessage" xml:space="preserve">
+        <value />
+    </data>
 </root>
