@@ -150,6 +150,16 @@ namespace ConverterBot.Bot
           _dialogs.TryAdd( message.Chat.Id, dialog );
           break;
         }
+        case "/get_services":
+        {
+          var services = DB.GetServicesForChat( message.Chat.Id );
+          if ( services != null )
+          {
+            Bot.Client.SendTextMessageAsync( message.Chat.Id, services[0] + services[1] );
+          }
+
+          break;
+        }
       }
     }
     public static void BotOnInlineQuery( object? sender, CallbackQueryEventArgs callbackQueryEventArgs )
