@@ -68,5 +68,23 @@ namespace ConverterBot {
                 return ResourceManager.GetString("HelloMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string NotFoundServicesNessage {
+            get {
+                return ResourceManager.GetString("NotFoundServicesNessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string ServicesInChatMessage {
+            get {
+                return ResourceManager.GetString("ServicesInChatMessage", resourceCulture);
+            }
+        }
     }
 }

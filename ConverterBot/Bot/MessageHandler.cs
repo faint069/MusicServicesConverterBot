@@ -133,7 +133,7 @@ namespace ConverterBot.Bot
       switch ( command )
       {
         case "/start":
-          Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.GreetingMessage
+          Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.Greetings
                                                                  .GetLocalized( message.From.LanguageCode ));
           break;
         case "/set_services":
@@ -155,9 +155,15 @@ namespace ConverterBot.Bot
           var services = DB.GetServicesForChat( message.Chat.Id );
           if ( services != null )
           {
-            Bot.Client.SendTextMessageAsync( message.Chat.Id, services[0] + services[1] );
+            Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.ServicesInChat
+                                                                           .GetLocalized( message.From.LanguageCode )
+                                                                           + $" {services[0]}, {services[1]}" );
           }
-
+          else
+          {
+            Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.NoServicesInChat
+                                                                           .GetLocalized( message.From.LanguageCode ) );
+          }
           break;
         }
       }

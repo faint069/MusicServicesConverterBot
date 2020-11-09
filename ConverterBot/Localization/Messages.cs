@@ -2,7 +2,9 @@
 {
   public static class Messages
   {
-    public static LocalizedString GreetingMessage => new LocalizedString( "HelloMessage" );
+    public static LocalizedString Greetings => new LocalizedString( "HelloMessage" );
+    public static LocalizedString NoServicesInChat => new LocalizedString( "NotFoundServicesNessage" );
+    public static LocalizedString ServicesInChat => new LocalizedString( "ServicesInChatMessage" );
     
   }
 }
