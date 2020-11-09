@@ -21,4 +21,13 @@
     <data name="ServicesInChatMessage" xml:space="preserve">
         <value>In this chat I'm converting between</value>
     </data>
+    <data name="SetServicesFirstMessage" xml:space="preserve">
+        <value>Select first service</value>
+    </data>
+    <data name="SetServicesSecondMessage" xml:space="preserve">
+        <value>Select second service</value>
+    </data>
+    <data name="SetServicesThirdMessage" xml:space="preserve">
+        <value>Setup is over</value>
+    </data>
 </root>

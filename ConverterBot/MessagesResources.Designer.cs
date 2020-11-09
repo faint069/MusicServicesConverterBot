@@ -86,5 +86,32 @@ namespace ConverterBot {
                 return ResourceManager.GetString("ServicesInChatMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SetServicesFirstMessage {
+            get {
+                return ResourceManager.GetString("SetServicesFirstMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SetServicesSecondMessage {
+            get {
+                return ResourceManager.GetString("SetServicesSecondMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SetServicesThirdMessage {
+            get {
+                return ResourceManager.GetString("SetServicesThirdMessage", resourceCulture);
+            }
+        }
     }
 }

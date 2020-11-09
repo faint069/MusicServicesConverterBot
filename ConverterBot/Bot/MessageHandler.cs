@@ -143,7 +143,7 @@ namespace ConverterBot.Bot
             _dialogs.Remove( message.Chat.Id );
           }
 
-          var dialog = new SetServicesDialog( message.Chat.Id );
+          var dialog = new SetServicesDialog( message.Chat.Id, message.From.LanguageCode );
                 
           dialog.PerformStep( );
 
