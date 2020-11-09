@@ -6,8 +6,8 @@
     {
     }
 
-    public long ChatId { get; }
-    public string[] Services { get; }
+    public long ChatId { get; set; }
+    public string[] Services { get; set; }
 
     public ServicesInChat( long chatId, string[] services )
     {
