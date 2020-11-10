@@ -1,4 +1,5 @@
 ﻿using ConverterBot.Models;
+using ConverterBot.Models.Music;
 
 namespace ConverterBot.Builders
 {

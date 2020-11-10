@@ -5,6 +5,8 @@ using ConverterBot.Builders;
 using ConverterBot.Localization;
 using ConverterBot.Misc;
 using ConverterBot.Models;
+using ConverterBot.Models.Dialogs;
+using ConverterBot.Models.Music;
 using ConverterBot.Parsers;
 using Serilog;
 using Telegram.Bot.Args;

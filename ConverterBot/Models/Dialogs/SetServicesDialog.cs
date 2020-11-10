@@ -3,7 +3,7 @@ using System.Linq;
 using ConverterBot.Localization;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace ConverterBot.Models
+namespace ConverterBot.Models.Dialogs
 {
   public class SetServicesDialog: IDialog
   {
@@ -19,7 +19,7 @@ namespace ConverterBot.Models
         }
         else
         {
-          return new InlineKeyboardMarkup( Clients.ClientsList.Except( SelectedServices )
+          return new InlineKeyboardMarkup( ConverterBot.Clients.ClientsList.Except( SelectedServices )
             .Select( _ =>
               new InlineKeyboardButton
               {Text = _, 

@@ -1,4 +1,4 @@
-﻿namespace ConverterBot.Models
+﻿namespace ConverterBot.Models.Music
 {
   public interface IMusic
   {

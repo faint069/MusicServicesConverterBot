@@ -1,6 +1,4 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
-
-namespace ConverterBot.Models
+﻿namespace ConverterBot.Models.Dialogs
 {
   public interface IDialog
   {

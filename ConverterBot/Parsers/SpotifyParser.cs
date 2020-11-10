@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using ConverterBot.Models;
+using ConverterBot.Models.Music;
 using SpotifyAPI.Web;
 
 namespace ConverterBot.Parsers

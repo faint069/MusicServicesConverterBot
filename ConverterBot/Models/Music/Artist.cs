@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConverterBot.Models
+namespace ConverterBot.Models.Music
 {
   public class Artist : IMusic
   {

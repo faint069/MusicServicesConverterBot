@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace ConverterBot.Models
+namespace ConverterBot.Models.Music
 {
   public class Album : IMusic
   {

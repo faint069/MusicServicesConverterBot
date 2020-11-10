@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using ConverterBot.Models;
+using ConverterBot.Models.Music;
 using Yandex.Music.Api.Models.Album;
 using Yandex.Music.Api.Models.Artist;
 using Yandex.Music.Api.Models.Track;
