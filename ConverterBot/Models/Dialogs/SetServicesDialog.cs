@@ -19,7 +19,7 @@ namespace ConverterBot.Models.Dialogs
         }
         else
         {
-          return new InlineKeyboardMarkup( ConverterBot.Clients.ClientsList.Except( SelectedServices )
+          return new InlineKeyboardMarkup( Services.Names.Except( SelectedServices )
             .Select( _ =>
               new InlineKeyboardButton
               {Text = _, 

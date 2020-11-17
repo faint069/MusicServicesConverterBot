@@ -46,7 +46,7 @@ namespace ConverterBot.Models.Clients
 
       if ( uriParts.Contains( "track" ) )
       {
-        FullTrack sTrack = ConverterBot.Clients.SpotifyClient.Tracks.Get( uriParts.Last( ) ).Result;
+        FullTrack sTrack = spotifyClient.Tracks.Get( uriParts.Last( ) ).Result;
 
         return new Track( sTrack.Name,
           								sTrack.Artists.First( ).Name,
@@ -67,7 +67,7 @@ namespace ConverterBot.Models.Clients
           id = uriParts.Last( );
         }
 
-        FullAlbum sAlbum = ConverterBot.Clients.SpotifyClient.Albums.Get( id ).Result;
+        FullAlbum sAlbum = spotifyClient.Albums.Get( id ).Result;
 
         return new Album( sAlbum.Name,
           							  sAlbum.Artists.First( ).Name,
@@ -77,8 +77,8 @@ namespace ConverterBot.Models.Clients
 
       if ( uriParts.Contains( "artist" ) )
       {
-        FullArtist sArtist = ConverterBot.Clients.SpotifyClient.Artists.Get( uriParts.Last( ) ).Result;
-        List<SimpleAlbum>? sArtistAlbums = ConverterBot.Clients.SpotifyClient.Artists.GetAlbums( uriParts.Last( ) ).Result.Items;
+        FullArtist sArtist = spotifyClient.Artists.Get( uriParts.Last( ) ).Result;
+        List<SimpleAlbum>? sArtistAlbums = spotifyClient.Artists.GetAlbums( uriParts.Last( ) ).Result.Items;
         SimpleAlbum sSampleAlbum = sArtistAlbums?.First( );
 
         Album sampleAlbum = new Album( sSampleAlbum?.Name,
@@ -123,7 +123,7 @@ namespace ConverterBot.Models.Clients
       {
         case Track _:
         {
-          SearchResponse response = ConverterBot.Clients.SpotifyClient.Search.Item(
+          SearchResponse response = spotifyClient.Search.Item(
                                     new SearchRequest( SearchRequest.Types.Track,
                                         musicToSearch.QueryString( ) ) )
             .Result;
@@ -142,7 +142,7 @@ namespace ConverterBot.Models.Clients
         }
         case Album _:
         {
-          SearchResponse response = ConverterBot.Clients.SpotifyClient.Search.Item(
+          SearchResponse response = spotifyClient.Search.Item(
               											new SearchRequest( SearchRequest.Types.Album,
               											    musicToSearch.QueryString( ) ) )
             .Result;
@@ -160,7 +160,7 @@ namespace ConverterBot.Models.Clients
         }
         case Artist artistToSearch:
         {
-          SearchResponse response = ConverterBot.Clients.SpotifyClient.Search.Item(
+          SearchResponse response = spotifyClient.Search.Item(
               											new SearchRequest( SearchRequest.Types.Artist,
               											    musicToSearch.QueryString( ) ) )
             .Result;
@@ -168,7 +168,7 @@ namespace ConverterBot.Models.Clients
           {
             if ( sArtist.Name == artistToSearch.Name )
             {
-              List<SimpleAlbum> sArtistAlbums = ConverterBot.Clients.SpotifyClient.Artists.GetAlbums( sArtist.Id ).Result.Items;
+              List<SimpleAlbum> sArtistAlbums = spotifyClient.Artists.GetAlbums( sArtist.Id ).Result.Items;
               foreach ( SimpleAlbum sSampleAlbum in sArtistAlbums )
               {
                 if ( artistToSearch.SampleAlbum.Equals( new Album( sSampleAlbum.Name,
