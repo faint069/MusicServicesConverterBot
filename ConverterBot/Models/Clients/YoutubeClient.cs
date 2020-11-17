@@ -11,6 +11,10 @@ namespace ConverterBot.Models.Clients
 
 		public string Name => name;
 
+    public YoutubeClient( )
+    {
+    }
+
 		public IMusic ParseUri( string Uri )
 		{
 			throw new System.NotImplementedException( );

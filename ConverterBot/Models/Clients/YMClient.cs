@@ -22,6 +22,10 @@ namespace ConverterBot.Models.Clients
 		private readonly YandexMusicApi yandexMusicClient;
 		private readonly AuthStorage    yAuthStorage;
 
+		public string FriendlyName => friendlyName;
+
+		public string Name => name;
+
 		public YMClient( )
 		{
 			Log.Information( "Connecting to Yandex Music..." );
@@ -32,10 +36,6 @@ namespace ConverterBot.Models.Clients
             
 			Log.Information( "Connection to Yandex Music successful" );
 		}
-
-		public string FriendlyName => friendlyName;
-
-		public string Name => name;
 
 		public IMusic ParseUri( string uri )
 		{

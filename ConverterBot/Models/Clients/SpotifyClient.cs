@@ -15,6 +15,9 @@ namespace ConverterBot.Models.Clients
 
 		private readonly SpotifyAPI.Web.SpotifyClient  spotifyClient;
 
+		public string FriendlyName => friendlyName;
+
+		public string Name => name;
 
 		public SpotifyClient( )
 		{
@@ -30,10 +33,6 @@ namespace ConverterBot.Models.Clients
 			Log.Information( "Connection to Spotify successful" );
 
 		}
-
-		public string FriendlyName => friendlyName;
-
-		public string Name => name;
 
 		public IMusic ParseUri( string uri )
 		{
