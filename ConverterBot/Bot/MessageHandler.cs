@@ -18,18 +18,10 @@ namespace ConverterBot.Bot
 {
   public static class MessageHandler
   {
-    //private static readonly Dictionary<string, IClient> Clients = new Dictionary<string, IClient>( );
     private static Dictionary<long, SetServicesDialog> _dialogs = new Dictionary<long, SetServicesDialog>();
 
     static MessageHandler( )
     {
-      //YandexClient  yandexMC  = new YandexClient(  );
-      //SpotifyClient SC        = new SpotifyClient(  );
-      //YoutubeClient youtubeMC = new YoutubeClient( );
-      //  
-      //Clients.Add( yandexMC.Name,  yandexMC );
-      //Clients.Add( SC.Name,        SC );
-      //Clients.Add( youtubeMC.Name, youtubeMC );
     }
        
     public static void BotOnMessage( object? sender, MessageEventArgs e )
@@ -101,36 +93,35 @@ namespace ConverterBot.Bot
       Bot.Client.SendStickerAsync( message.Chat.Id,
         new InputOnlineFile( Stickers.GetRandomSmickingBotSticker(  ) ) );
     }
-        
+
     private static void ProcessUri( string uri, Message message )
     {
-      if ( Services.TryGetClientForUri( uri, out IClient client ) )
+      if ( Services.TryGetClientForUri( uri, out IClient inClient ) )
       {
-        try
+        string[] servicesInChat = DB.GetServicesForChat( message.Chat.Id );
+        if ( servicesInChat.Contains( inClient.FriendlyName ) )
         {
-          IMusic parsedMusic = client.ParseUri( uri );
+          IMusic parsedMusic = inClient.ParseUri( uri );
           Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
-          string reply = client.SearchMusic( parsedMusic ) ?? 
+          IClient outClient =
+            Services.GetClientFromFriendlyName( servicesInChat.Single( _ => _ != inClient.FriendlyName ) );
+          string reply = outClient.SearchMusic( parsedMusic ) ??
                          Messages.MusicNotFound.GetLocalized( message.From.LanguageCode );
 
           Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
-          
         }
-        catch ( InvalidOperationException )
+        else
         {
-          Log.Error( "Uri received, but parser not found" );
           Bot.Client.SendTextMessageAsync( message.Chat.Id,
-            "Либо это не ссылка на музыку, либо я не умею работать с этим сервисом" );
-        }
-        catch ( NullReferenceException )
-        {
-          Log.Error( "Parser failed" );
-          Bot.Client.SendTextMessageAsync( message.Chat.Id,
-            "Музыка не распознана" );
-
+            Messages.ServiceINonInChat.GetLocalized( message.From.LanguageCode ) );
         }
       }
+      else
+      {
+        Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.WrongUri.GetLocalized(message.From.LanguageCode) );
+      }
     }
+
     private static void ProcessCommand( string command, Message message )
     {
       switch ( command )

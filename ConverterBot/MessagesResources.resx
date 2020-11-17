@@ -45,4 +45,10 @@
     <data name="HelpMessage" xml:space="preserve">
         <value />
     </data>
+    <data name="ServiceIsNotInChatMessage" xml:space="preserve">
+        <value />
+    </data>
+    <data name="WrongUriMessage" xml:space="preserve">
+        <value />
+    </data>
 </root>

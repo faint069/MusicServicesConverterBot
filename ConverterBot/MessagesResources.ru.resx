@@ -41,4 +41,10 @@
 Что бы посмотреть сервисы используемые тут, напишите /get_services.
 Если у Вас есть вопросы или пожелания, напишите автору: @Feelatoff</value>
     </data>
+    <data name="ServiceIsNotInChatMessage" xml:space="preserve">
+        <value>Стриминговый сервис из Вашего сообщения не активен в этом чате.</value>
+    </data>
+    <data name="WrongUriMessage" xml:space="preserve">
+        <value>Это не ссылка на стриминговый сервис или я еще не умею работать с этим сервисом.</value>
+    </data>
 </root>

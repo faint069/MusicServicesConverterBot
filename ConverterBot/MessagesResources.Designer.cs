@@ -108,6 +108,15 @@ namespace ConverterBot {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string ServiceIsNotInChatMessage {
+            get {
+                return ResourceManager.GetString("ServiceIsNotInChatMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string ServicesInChatMessage {
             get {
                 return ResourceManager.GetString("ServicesInChatMessage", resourceCulture);
@@ -138,6 +147,15 @@ namespace ConverterBot {
         internal static string SetServicesThirdMessage {
             get {
                 return ResourceManager.GetString("SetServicesThirdMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string WrongUriMessage {
+            get {
+                return ResourceManager.GetString("WrongUriMessage", resourceCulture);
             }
         }
     }

@@ -41,4 +41,10 @@
 To set services between which I will convert in this chat use /set_services command. To view services in this chat use /get_services.
 If You have questions or suggestions please contact author: @Feelatoff</value>
     </data>
+    <data name="ServiceIsNotInChatMessage" xml:space="preserve">
+        <value>Streaming Service from Link above is not active n this chat.</value>
+    </data>
+    <data name="WrongUriMessage" xml:space="preserve">
+        <value>This is not a link to a Streaming Service or I don't know this service yet.</value>
+    </data>
 </root>
