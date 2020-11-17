@@ -45,6 +45,6 @@ If You have questions or suggestions please contact author: @Feelatoff</value>
         <value>Streaming Service from Link above is not active n this chat.</value>
     </data>
     <data name="WrongUriMessage" xml:space="preserve">
-        <value>This is not a link to a Streaming Service or I don't know this service yet.</value>
+        <value>This is not a link to a Streaming Service or I don't know this service yet, or I don't know what to do with this tye of content</value>
     </data>
 </root>

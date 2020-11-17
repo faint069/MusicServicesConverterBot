@@ -18,7 +18,7 @@ namespace ConverterBot
       
       collection.EnsureIndex( _ => _.ChatId );
       
-      return collection.FindOne( _ => _.ChatId == chatId ).Services;
+      return collection.FindOne( _ => _.ChatId == chatId )?.Services;
     }
 
     public static void SetServicesForChat( long chatId, string[] services )
