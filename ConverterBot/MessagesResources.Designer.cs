@@ -99,9 +99,9 @@ namespace ConverterBot {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string NotFoundServicesNessage {
+        internal static string NotFoundServicesMessage {
             get {
-                return ResourceManager.GetString("NotFoundServicesNessage", resourceCulture);
+                return ResourceManager.GetString("NotFoundServicesMessage", resourceCulture);
             }
         }
         

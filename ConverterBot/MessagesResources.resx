@@ -21,7 +21,7 @@
     <data name="HelloMessage" xml:space="preserve">
         <value />
     </data>
-    <data name="NotFoundServicesNessage" xml:space="preserve">
+    <data name="NotFoundServicesMessage" xml:space="preserve">
         <value />
     </data>
     <data name="ServicesInChatMessage" xml:space="preserve">

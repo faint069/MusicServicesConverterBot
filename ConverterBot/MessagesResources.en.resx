@@ -14,8 +14,8 @@
     <data name="HelloMessage" xml:space="preserve">
         <value>Hello! I can handle links from streaming services. You can send me a link to a track, album or artist, and I will try to reply with a link to the same music in another service. At the moment I can work with Yandex Music and Spotify. I'm waiting for the link.</value>
     </data>
-    <data name="NotFoundServicesNessage" xml:space="preserve">
-        <value>There are no services installed for this chat between which I could convert. Use the / set_services command to do this
+    <data name="NotFoundServicesMessage" xml:space="preserve">
+        <value>There are no services installed for this chat between which I could convert. Use the /set_services command to do this
 </value>
     </data>
     <data name="ServicesInChatMessage" xml:space="preserve">

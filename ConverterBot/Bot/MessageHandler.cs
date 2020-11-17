@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ConverterBot.Localization;
 using ConverterBot.Misc;
@@ -18,7 +17,8 @@ namespace ConverterBot.Bot
 {
   public static class MessageHandler
   {
-    private static Dictionary<long, SetServicesDialog> _dialogs = new Dictionary<long, SetServicesDialog>();
+    private static readonly Dictionary<long, SetServicesDialog> Dialogs = 
+                                new Dictionary<long, SetServicesDialog>();
 
     static MessageHandler( )
     {
@@ -37,13 +37,12 @@ namespace ConverterBot.Bot
         default: 
           HandleCommon( e.Message );
           break;
-      };
+      }
     }
-        
-
+    
     private static void HandleCommon( Message message )
     {
-      Log.Warning( $"Unknown Message recieved in chat: " +
+      Log.Warning( "Unknown Message received in chat: " +
                    $"{message.Chat.Id} " +
                    $"from: {message.From.FirstName} " +
                    $"{message.From.LastName}. " +
@@ -56,7 +55,7 @@ namespace ConverterBot.Bot
         
     private static void HandleText( Message message )
     {
-      Log.Information( $"Text Message recieved in chat: " +
+      Log.Information( "Text Message received in chat: " +
                        $"{message.Chat.Id} " +
                        $"from: {message.From.FirstName} " +
                        $"{message.From.LastName}. " +
@@ -85,7 +84,7 @@ namespace ConverterBot.Bot
 
     private static void HandleVideonote( Message message )
     {
-      Log.Information( "Videomessage received: " +
+      Log.Information( "Video Message received: " +
                        $"{message.Chat.Id} " +
                        $"from: {message.From.FirstName} " +
                        $"{message.From.LastName}.");
@@ -99,21 +98,29 @@ namespace ConverterBot.Bot
       if ( Services.TryGetClientForUri( uri, out IClient inClient ) )
       {
         string[] servicesInChat = DB.GetServicesForChat( message.Chat.Id );
-        if ( servicesInChat.Contains( inClient.FriendlyName ) )
+        if ( servicesInChat != null )
         {
-          IMusic parsedMusic = inClient.ParseUri( uri );
-          Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
-          IClient outClient =
-            Services.GetClientFromFriendlyName( servicesInChat.Single( _ => _ != inClient.FriendlyName ) );
-          string reply = outClient.SearchMusic( parsedMusic ) ??
-                         Messages.MusicNotFound.GetLocalized( message.From.LanguageCode );
+          if ( servicesInChat.Contains( inClient.FriendlyName ) )
+          {
+            IMusic parsedMusic = inClient.ParseUri( uri );
+            Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
+            IClient outClient =
+              Services.GetClientFromFriendlyName( servicesInChat.Single( _ => _ != inClient.FriendlyName ) );
+            string reply = outClient.SearchMusic( parsedMusic ) ??
+                           Messages.MusicNotFound.GetLocalized( message.From.LanguageCode );
 
-          Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
+            Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
+          }
+          else
+          {
+            Bot.Client.SendTextMessageAsync( message.Chat.Id,
+              Messages.ServiceINonInChat.GetLocalized( message.From.LanguageCode ) );
+          }
         }
         else
         {
-          Bot.Client.SendTextMessageAsync( message.Chat.Id,
-            Messages.ServiceINonInChat.GetLocalized( message.From.LanguageCode ) );
+          Bot.Client.SendTextMessageAsync( message.Chat.Id, 
+                                           Messages.NoServicesInChat.GetLocalized( message.From.LanguageCode ) );
         }
       }
       else
@@ -136,16 +143,16 @@ namespace ConverterBot.Bot
           break;
         case "/set_services":
         {
-          if ( _dialogs.ContainsKey( message.Chat.Id ) )
+          if ( Dialogs.ContainsKey( message.Chat.Id ) )
           {
-            _dialogs.Remove( message.Chat.Id );
+            Dialogs.Remove( message.Chat.Id );
           }
 
           var dialog = new SetServicesDialog( message.Chat.Id, message.From.LanguageCode );
                 
           dialog.PerformStep( );
 
-          _dialogs.TryAdd( message.Chat.Id, dialog );
+          Dialogs.TryAdd( message.Chat.Id, dialog );
           break;
         }
         case "/get_services":
@@ -177,14 +184,13 @@ namespace ConverterBot.Bot
                                                 InlineKeyboardMarkup.Empty( ) );
         
         string service = callbackQueryEventArgs.CallbackQuery.Data.Split( '|' ).Last( );
-        SetServicesDialog dialog;
-        if ( _dialogs.TryGetValue( chatId, out dialog ) )
+        if ( Dialogs.TryGetValue( chatId, out SetServicesDialog dialog ) )
         {
           dialog.SelectedServices.Add( service );
           dialog.PerformStep(  );
           if ( dialog.IsOver )
           {
-            _dialogs.Remove( chatId );
+            Dialogs.Remove( chatId );
           }
         }
       }

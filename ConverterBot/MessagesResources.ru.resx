@@ -14,7 +14,7 @@
     <data name="HelloMessage" xml:space="preserve">
         <value>Привет! Я умею обрабатывать ссылки из стриминговых сервисов. Мне можно прислать ссылку на трек, альбом или артиста, а я постараюсь ответить ссылкой на эту же музыку в другом сервисе. На данный момент я умею работать с Яндекс Музыкой и Спотифай. Жду ссылки.</value>
     </data>
-    <data name="NotFoundServicesNessage" xml:space="preserve">
+    <data name="NotFoundServicesMessage" xml:space="preserve">
         <value>Для этого чата не установлены сервисы между которыми я мог бы конвертировать. Используйте команду /set_services, что бы сделать это</value>
     </data>
     <data name="ServicesInChatMessage" xml:space="preserve">
