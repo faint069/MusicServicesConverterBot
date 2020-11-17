@@ -18,7 +18,7 @@
         <value>Для этого чата не установлены сервисы между которыми я мог бы конвертировать. Используйте команду /set_services, что бы сделать это</value>
     </data>
     <data name="ServicesInChatMessage" xml:space="preserve">
-        <value>В этом чате я конвертирую между</value>
+        <value>Сервисы для конвертации в этом чате:</value>
     </data>
     <data name="SetServicesFirstMessage" xml:space="preserve">
         <value>Выберите первый сервис</value>
@@ -27,7 +27,7 @@
         <value>Выберите второй сервис</value>
     </data>
     <data name="SetServicesThirdMessage" xml:space="preserve">
-        <value>Настройка завершена</value>
+        <value>Настройка завершена. Теперь в этом чате: </value>
     </data>
     <data name="MusicNotFoundMessage" xml:space="preserve">
         <value>Ничего не нашлось</value>
@@ -37,7 +37,7 @@
     </data>
     <data name="HelpMessage" xml:space="preserve">
         <value>Я умею обрабатывать ссылки из стриминговых сервисов. Мне можно прислать ссылку на трек, альбом или артиста, а я постараюсь ответить ссылкой на эту же музыку в другом сервисе. На данный момент я умею работать с Яндекс Музыкой и Спотифай.
-Чтобы выбрать, между какими сепвисами я буду конвертировать в этом чатенапишите /set_services.
+Чтобы выбрать, между какими сервисами я буду конвертировать в этом чате, напишите /set_services.
 Что бы посмотреть сервисы используемые тут, напишите /get_services.
 Если у Вас есть вопросы или пожелания, напишите автору: @Feelatoff</value>
     </data>

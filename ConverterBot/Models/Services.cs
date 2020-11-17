@@ -47,5 +47,10 @@ namespace ConverterBot.Models
       client = Clients.SingleOrDefault( _ => uri.Contains( _.Name ) );
       return client != null;
     }
+
+    public static string GetServiceFriendlyName( string name )
+    {
+      return Clients.SingleOrDefault( _ => _.Name == name )?.FriendlyName;
+    }
   }
 }

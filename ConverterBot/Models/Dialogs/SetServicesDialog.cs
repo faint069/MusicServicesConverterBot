@@ -19,7 +19,7 @@ namespace ConverterBot.Models.Dialogs
         }
         else
         {
-          return new InlineKeyboardMarkup( Services.Names.Except( SelectedServices )
+          return new InlineKeyboardMarkup( Services.FriendlyNames.Except( SelectedServices )
             .Select( _ =>
               new InlineKeyboardButton
               {Text = _, 
@@ -59,6 +59,7 @@ namespace ConverterBot.Models.Dialogs
         {
           IsOver = true;
           DB.SetServicesForChat( ChatId, SelectedServices.ToArray(  ) );
+          Bot.Bot.Client.SendTextMessageAsync( ChatId, string.Join( ", ", SelectedServices ) );
         }
       }
     }

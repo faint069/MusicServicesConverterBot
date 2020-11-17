@@ -19,7 +19,7 @@
 </value>
     </data>
     <data name="ServicesInChatMessage" xml:space="preserve">
-        <value>In this chat I'm converting between</value>
+        <value>Services for converting in this chat:</value>
     </data>
     <data name="SetServicesFirstMessage" xml:space="preserve">
         <value>Select first service</value>
@@ -28,7 +28,7 @@
         <value>Select second service</value>
     </data>
     <data name="SetServicesThirdMessage" xml:space="preserve">
-        <value>Setup is over</value>
+        <value>Setup is over. Now in this chat are: </value>
     </data>
     <data name="MusicNotFoundMessage" xml:space="preserve">
         <value>Sorry, I cant't found anything</value>
