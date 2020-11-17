@@ -14,7 +14,7 @@ using Yandex.Music.Api.Models.Track;
 
 namespace ConverterBot.Models.Clients
 {
-	public class YMClient : IClient
+	public class YandexClient : IClient
 	{
 		private const string friendlyName = "Yandex Music";
 		private const string name         = "music.yandex";
@@ -22,7 +22,11 @@ namespace ConverterBot.Models.Clients
 		private readonly YandexMusicApi yandexMusicClient;
 		private readonly AuthStorage    yAuthStorage;
 
-		public YMClient( )
+		public string FriendlyName => friendlyName;
+
+		public string Name => name;
+
+		public YandexClient( )
 		{
 			Log.Information( "Connecting to Yandex Music..." );
 
@@ -32,10 +36,6 @@ namespace ConverterBot.Models.Clients
             
 			Log.Information( "Connection to Yandex Music successful" );
 		}
-
-		public string FriendlyName => friendlyName;
-
-		public string Name => name;
 
 		public IMusic ParseUri( string uri )
 		{
