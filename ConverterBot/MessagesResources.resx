@@ -42,4 +42,7 @@
     <data name="CantProcessMessage" xml:space="preserve">
         <value />
     </data>
+    <data name="HelpMessage" xml:space="preserve">
+        <value />
+    </data>
 </root>

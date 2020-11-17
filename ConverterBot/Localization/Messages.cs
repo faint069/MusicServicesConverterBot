@@ -10,6 +10,7 @@
     public static LocalizedString SetServicesThird  => new LocalizedString( "SetServicesThirdMessage" );
     public static LocalizedString MusicNotFound     => new LocalizedString( "MusicNotFoundMessage" );
     public static LocalizedString CantProcess       => new LocalizedString( "CantProcessMessage" );
+    public static LocalizedString Help              => new LocalizedString( "HelpMessage" );
     
   }
 }

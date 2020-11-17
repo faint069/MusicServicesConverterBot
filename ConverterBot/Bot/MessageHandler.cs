@@ -141,6 +141,10 @@ namespace ConverterBot.Bot
           Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.Greetings
                                                                  .GetLocalized( message.From.LanguageCode ));
           break;
+        case "/help":
+          Bot.Client.SendTextMessageAsync( message.Chat.Id, 
+                                           Messages.Help.GetLocalized( message.From.LanguageCode ));
+          break;
         case "/set_services":
         {
           if ( _dialogs.ContainsKey( message.Chat.Id ) )

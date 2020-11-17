@@ -36,4 +36,9 @@
     <data name="CantProcessMessage" xml:space="preserve">
         <value>Sorry, I don't know what to do whith this request. You can send /help to see how I'm working.</value>
     </data>
+    <data name="HelpMessage" xml:space="preserve">
+        <value>I can handle links from streaming services. You can send me a link to a track, album or artist, and I will try to reply with a link to the same music in another service. At the moment I can work with Yandex Music and Spotify.
+To set services between which I will convert in this chat use /set_services command. To view services in this chat use /get_services.
+If You have questions or suggestions please contact author: @Feelatoff</value>
+    </data>
 </root>
