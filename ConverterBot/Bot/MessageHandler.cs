@@ -103,19 +103,27 @@ namespace ConverterBot.Bot
           if ( servicesInChat.Contains( inClient.FriendlyName ) )
           {
             IMusic parsedMusic = inClient.ParseUri( uri );
-            Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
-            IClient outClient =
-              Services.GetClientFromFriendlyName( servicesInChat.Single( _ => _ != inClient.FriendlyName ) );
-            string reply = outClient.SearchMusic( parsedMusic ) ??
-                           Messages.MusicNotFound.GetLocalized( message.From.LanguageCode ) + 
-                           outClient.GetSearchUri( parsedMusic );
+            if ( parsedMusic != null )
+            {
+              Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
+              IClient outClient =
+                Services.GetClientFromFriendlyName( servicesInChat.Single( _ => _ != inClient.FriendlyName ) );
+              string reply = outClient.SearchMusic( parsedMusic ) ??
+                             Messages.MusicNotFound.GetLocalized( message.From.LanguageCode ) + 
+                             outClient.GetSearchUri( parsedMusic );
 
-            Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
+              Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
+            }
+            else
+            {
+              Bot.Client.SendTextMessageAsync( message.Chat.Id,
+                                               Messages.WrongUri.GetLocalized(message.From.LanguageCode) );
+            }
           }
           else
           {
             Bot.Client.SendTextMessageAsync( message.Chat.Id,
-              Messages.ServiceINonInChat.GetLocalized( message.From.LanguageCode ) );
+                                             Messages.ServiceINonInChat.GetLocalized( message.From.LanguageCode ) );
           }
         }
         else
@@ -126,54 +134,53 @@ namespace ConverterBot.Bot
       }
       else
       {
-        Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.WrongUri.GetLocalized(message.From.LanguageCode) );
+        Bot.Client.SendTextMessageAsync( message.Chat.Id, 
+                                         Messages.WrongUri.GetLocalized(message.From.LanguageCode) );
       }
     }
 
     private static void ProcessCommand( string command, Message message )
     {
-      switch ( command )
+      if ( command.StartsWith( "/start" ) )
       {
-        case "/start":
-          Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.Greetings
-                                                                 .GetLocalized( message.From.LanguageCode ));
-          break;
-        case "/help":
-          Bot.Client.SendTextMessageAsync( message.Chat.Id, 
-                                           Messages.Help.GetLocalized( message.From.LanguageCode ));
-          break;
-        case "/set_services":
+        Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.Greetings
+          .GetLocalized( message.From.LanguageCode ) );
+      }
+      else if ( command.StartsWith( "/help" ) )
+      {
+        Bot.Client.SendTextMessageAsync( message.Chat.Id,
+          Messages.Help.GetLocalized( message.From.LanguageCode ) );
+      }
+      else if ( command.StartsWith( "/set_services") )
+      {
+        if ( Dialogs.ContainsKey( message.Chat.Id ) )
         {
-          if ( Dialogs.ContainsKey( message.Chat.Id ) )
-          {
-            Dialogs.Remove( message.Chat.Id );
-          }
-
-          var dialog = new SetServicesDialog( message.Chat.Id, message.From.LanguageCode );
-                
-          dialog.PerformStep( );
-
-          Dialogs.TryAdd( message.Chat.Id, dialog );
-          break;
+          Dialogs.Remove( message.Chat.Id );
         }
-        case "/get_services":
+
+        var dialog = new SetServicesDialog( message.Chat.Id, message.From.LanguageCode );
+
+        dialog.PerformStep( );
+
+        Dialogs.TryAdd( message.Chat.Id, dialog );
+      }
+      else if ( command.StartsWith( "/get_services" ) )
+      {
+        var services = DB.GetServicesForChat( message.Chat.Id );
+        if ( services != null )
         {
-          var services = DB.GetServicesForChat( message.Chat.Id );
-          if ( services != null )
-          {
-            Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.ServicesInChat
-                                                                           .GetLocalized( message.From.LanguageCode )
-                                                                           + $" {services[0]}, {services[1]}" );
-          }
-          else
-          {
-            Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.NoServicesInChat
-                                                                           .GetLocalized( message.From.LanguageCode ) );
-          }
-          break;
+          Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.ServicesInChat
+                                                              .GetLocalized( message.From.LanguageCode )
+                                                            + $" {services[0]}, {services[1]}" );
+        }
+        else
+        {
+          Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.NoServicesInChat
+            .GetLocalized( message.From.LanguageCode ) );
         }
       }
     }
+    
     public static void BotOnInlineQuery( object? sender, CallbackQueryEventArgs callbackQueryEventArgs )
     {
       if ( callbackQueryEventArgs.CallbackQuery.Data.StartsWith( "set_command" ) )

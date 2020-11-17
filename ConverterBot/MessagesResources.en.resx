@@ -12,7 +12,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="HelloMessage" xml:space="preserve">
-        <value>Hello! I can handle links from streaming services. You can send me a link to a track, album or artist, and I will try to reply with a link to the same music in another service. At the moment I can work with Yandex Music and Spotify. I'm waiting for the link.</value>
+        <value>Hello! I can handle links from streaming services. You can send me a link to a track, album or artist, and I will try to reply with a link to the same music in another service. At the moment I can work with Yandex Music and Spotify. To start we need determine Streaming Services that we will use. Send /set_services command to do this.</value>
     </data>
     <data name="NotFoundServicesMessage" xml:space="preserve">
         <value>There are no services installed for this chat between which I could convert. Use the /set_services command to do this
@@ -45,6 +45,6 @@ If You have questions or suggestions please contact author: @Feelatoff</value>
         <value>Streaming Service from Link above is not active n this chat.</value>
     </data>
     <data name="WrongUriMessage" xml:space="preserve">
-        <value>This is not a link to a Streaming Service or I don't know this service yet.</value>
+        <value>This is not a link to a Streaming Service or I don't know this service yet, or I don't know what to do with this tye of content</value>
     </data>
 </root>
