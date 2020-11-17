@@ -63,6 +63,15 @@ namespace ConverterBot {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string CantProcessMessage {
+            get {
+                return ResourceManager.GetString("CantProcessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string HelloMessage {
             get {
                 return ResourceManager.GetString("HelloMessage", resourceCulture);

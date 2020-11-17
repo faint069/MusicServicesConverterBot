@@ -39,4 +39,7 @@
     <data name="MusicNotFoundMessage" xml:space="preserve">
         <value />
     </data>
+    <data name="CantProcessMessage" xml:space="preserve">
+        <value />
+    </data>
 </root>

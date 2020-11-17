@@ -56,6 +56,9 @@ namespace ConverterBot.Bot
                    $"{message.From.LastName}. " +
                    $"Text: {message.Text} " + 
                    $"Type: {message.Type} " );
+
+      Bot.Client.SendTextMessageAsync( message.Chat.Id, 
+                                       Messages.CantProcess.GetLocalized( message.From.LanguageCode ) );
     }
         
     private static void HandleText( Message message )
@@ -79,7 +82,8 @@ namespace ConverterBot.Bot
               ProcessUri( message.EntityValues.ElementAt( i ), message );
               break;
             default:
-              Bot.Client.SendTextMessageAsync( message.Chat.Id, "Я не умею с этим работать" );
+              Bot.Client.SendTextMessageAsync( message.Chat.Id,
+                                               Messages.CantProcess.GetLocalized( message.From.LanguageCode ));
               break;
           }
         }

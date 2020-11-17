@@ -33,4 +33,7 @@
     <data name="MusicNotFoundMessage" xml:space="preserve">
         <value>Sorry, I cant't found anything</value>
     </data>
+    <data name="CantProcessMessage" xml:space="preserve">
+        <value>Sorry, I don't know what to do whith this request. You can send /help to see how I'm working.</value>
+    </data>
 </root>
