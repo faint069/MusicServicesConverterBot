@@ -72,6 +72,15 @@ namespace ConverterBot {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string MusicNotFoundMessage {
+            get {
+                return ResourceManager.GetString("MusicNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string NotFoundServicesNessage {
             get {
                 return ResourceManager.GetString("NotFoundServicesNessage", resourceCulture);

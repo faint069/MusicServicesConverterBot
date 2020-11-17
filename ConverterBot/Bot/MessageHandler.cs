@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ConverterBot.Builders;
 using ConverterBot.Localization;
 using ConverterBot.Misc;
-using ConverterBot.Models;
+using ConverterBot.Models.Clients;
 using ConverterBot.Models.Dialogs;
 using ConverterBot.Models.Music;
-using ConverterBot.Parsers;
 using Serilog;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -19,21 +17,20 @@ namespace ConverterBot.Bot
 {
   public static class MessageHandler
   {
-    private static readonly Dictionary<string, IParser> Parsers = new Dictionary<string, IParser>
-    {
-      {Services.YandexMusic, new YmParser( )},
-      {Services.Spotify,     new SpotifyParser( )}
-    };
-            
-    private static readonly Dictionary<string, IBuilder> Builders = new Dictionary<string, IBuilder>
-    {
-      {Services.YandexMusic,  new YmBuilder(  )},
-      {Services.Spotify,      new SpotifyBuilder(  )},
-      {Services.YoutubeMusic, new YoutubeMusicBuilder(  )}
-    };
+    private static readonly Dictionary<string, IClient> Clients = new Dictionary<string, IClient>( );
     private static Dictionary<long, SetServicesDialog> _dialogs = new Dictionary<long, SetServicesDialog>();
 
+    static MessageHandler( )
+    {
+      YandexClient  yandexMC  = new YandexClient(  );
+      SpotifyClient SC        = new SpotifyClient(  );
+      YoutubeClient youtubeMC = new YoutubeClient( );
         
+      Clients.Add( yandexMC.Name,  yandexMC );
+      Clients.Add( SC.Name,        SC );
+      Clients.Add( youtubeMC.Name, youtubeMC );
+    }
+       
     public static void BotOnMessage( object? sender, MessageEventArgs e )
     { 
       switch ( e.Message.Type )
@@ -79,7 +76,7 @@ namespace ConverterBot.Bot
               ProcessCommand( message.EntityValues.ElementAt( i ), message );
               break;
             case MessageEntityType.Url:
-              ProcessUri( message.EntityValues.ElementAt( i ), message.Chat.Id );
+              ProcessUri( message.EntityValues.ElementAt( i ), message );
               break;
             default:
               Bot.Client.SendTextMessageAsync( message.Chat.Id, "Я не умею с этим работать" );
@@ -100,31 +97,33 @@ namespace ConverterBot.Bot
         new InputOnlineFile( Stickers.GetRandomSmickingBotSticker(  ) ) );
     }
         
-
-    private static void ProcessUri( string uri, long chatId )
+    private static void ProcessUri( string uri, Message message )
     {
-      if ( Clients.ClientsList.Any(_ => uri.Contains( _ )) )
+      if ( Clients.Keys.Any(_ => uri.Contains( _ ) ) )
       {
         try
         {
-          IParser parser = Parsers.First( _ => uri.Contains( _.Key ) ).Value;
-          IMusic parsedMusic = parser.ParseUri( uri );
-          Bot.Client.SendTextMessageAsync( chatId, parsedMusic.ToString( ) );
-          IBuilder builder = Builders.First( _ => !uri.Contains( _.Key ) ).Value;
-          string reply = builder.SearchMusic( parsedMusic ) ?? "Не получилось найти музыку";
+          IClient client = Clients.First( _ => uri.Contains( _.Key ) ).Value;
+          if ( client != null )
+          {
+            IMusic parsedMusic = client.ParseUri( uri );
+            Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
+            string reply = client.SearchMusic( parsedMusic ) ?? 
+                           Messages.MusicNotFound.GetLocalized( message.From.LanguageCode );
 
-          Bot.Client.SendTextMessageAsync( chatId, reply );
+            Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
+          }
         }
         catch ( InvalidOperationException )
         {
           Log.Error( "Uri received, but parser not found" );
-          Bot.Client.SendTextMessageAsync( chatId,
+          Bot.Client.SendTextMessageAsync( message.Chat.Id,
             "Либо это не ссылка на музыку, либо я не умею работать с этим сервисом" );
         }
         catch ( NullReferenceException )
         {
           Log.Error( "Parser failed" );
-          Bot.Client.SendTextMessageAsync( chatId,
+          Bot.Client.SendTextMessageAsync( message.Chat.Id,
             "Музыка не распознана" );
 
         }

@@ -29,4 +29,7 @@
     <data name="SetServicesThirdMessage" xml:space="preserve">
         <value>Настройка завершена</value>
     </data>
+    <data name="MusicNotFoundMessage" xml:space="preserve">
+        <value>Ничего не нашлось</value>
+    </data>
 </root>

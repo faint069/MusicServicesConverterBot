@@ -30,4 +30,7 @@
     <data name="SetServicesThirdMessage" xml:space="preserve">
         <value>Setup is over</value>
     </data>
+    <data name="MusicNotFoundMessage" xml:space="preserve">
+        <value>Sorry, I cant't found anything</value>
+    </data>
 </root>
