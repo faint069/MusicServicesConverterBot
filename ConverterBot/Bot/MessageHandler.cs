@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ConverterBot.Localization;
 using ConverterBot.Misc;
+using ConverterBot.Models;
 using ConverterBot.Models.Clients;
 using ConverterBot.Models.Dialogs;
 using ConverterBot.Models.Music;
@@ -17,18 +18,18 @@ namespace ConverterBot.Bot
 {
   public static class MessageHandler
   {
-    private static readonly Dictionary<string, IClient> Clients = new Dictionary<string, IClient>( );
+    //private static readonly Dictionary<string, IClient> Clients = new Dictionary<string, IClient>( );
     private static Dictionary<long, SetServicesDialog> _dialogs = new Dictionary<long, SetServicesDialog>();
 
     static MessageHandler( )
     {
-      YandexClient  yandexMC  = new YandexClient(  );
-      SpotifyClient SC        = new SpotifyClient(  );
-      YoutubeClient youtubeMC = new YoutubeClient( );
-        
-      Clients.Add( yandexMC.Name,  yandexMC );
-      Clients.Add( SC.Name,        SC );
-      Clients.Add( youtubeMC.Name, youtubeMC );
+      //YandexClient  yandexMC  = new YandexClient(  );
+      //SpotifyClient SC        = new SpotifyClient(  );
+      //YoutubeClient youtubeMC = new YoutubeClient( );
+      //  
+      //Clients.Add( yandexMC.Name,  yandexMC );
+      //Clients.Add( SC.Name,        SC );
+      //Clients.Add( youtubeMC.Name, youtubeMC );
     }
        
     public static void BotOnMessage( object? sender, MessageEventArgs e )
@@ -103,20 +104,17 @@ namespace ConverterBot.Bot
         
     private static void ProcessUri( string uri, Message message )
     {
-      if ( Clients.Keys.Any(_ => uri.Contains( _ ) ) )
+      if ( Services.TryGetClientForUri( uri, out IClient client ) )
       {
         try
         {
-          IClient client = Clients.First( _ => uri.Contains( _.Key ) ).Value;
-          if ( client != null )
-          {
-            IMusic parsedMusic = client.ParseUri( uri );
-            Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
-            string reply = client.SearchMusic( parsedMusic ) ?? 
-                           Messages.MusicNotFound.GetLocalized( message.From.LanguageCode );
+          IMusic parsedMusic = client.ParseUri( uri );
+          Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
+          string reply = client.SearchMusic( parsedMusic ) ?? 
+                         Messages.MusicNotFound.GetLocalized( message.From.LanguageCode );
 
-            Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
-          }
+          Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
+          
         }
         catch ( InvalidOperationException )
         {

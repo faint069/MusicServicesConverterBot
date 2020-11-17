@@ -1,10 +1,51 @@
-﻿namespace ConverterBot.Models
+﻿using System.Collections.Generic;
+using System.Linq;
+using ConverterBot.Models.Clients;
+
+namespace ConverterBot.Models
 {
-  public  struct Services
+  public static class Services
   {
-    public const string Spotify      = "spotify";
-    public const string YandexMusic  = "music.yandex";
-    public const string YoutubeMusic = "music.youtube";
-        
+    private static readonly List<IClient> Clients = new List<IClient>
+    {
+      new YandexClient(  ),
+      new SpotifyClient(  ),
+      new YoutubeClient(  )
+    };
+    static Services( )
+    {
+    }
+
+    public static List<string> Names
+    {
+      get
+      {
+        return Clients.Select( _ => _.Name ).ToList(  );
+      }
+    }
+
+    public static List<string> FriendlyNames
+    {
+      get
+      {
+        return Clients.Select( _ => _.FriendlyName ).ToList(  );
+      }
+    }
+
+    public static IClient GetClientFromName( string name )
+    {
+      return Clients.SingleOrDefault( _ => _.Name == name);
+    }
+    
+    public static IClient GetClientFromFriendlyName( string friendlyName )
+    {
+      return Clients.SingleOrDefault( _ => _.FriendlyName == friendlyName);
+    }
+
+    public static bool TryGetClientForUri( string uri, out IClient client )
+    {
+      client = Clients.SingleOrDefault( _ => uri.Contains( _.Name ) );
+      return client != null;
+    }
   }
 }
