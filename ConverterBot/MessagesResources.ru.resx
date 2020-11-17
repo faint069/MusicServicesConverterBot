@@ -30,7 +30,7 @@
         <value>Настройка завершена. Теперь в этом чате: </value>
     </data>
     <data name="MusicNotFoundMessage" xml:space="preserve">
-        <value>Ничего не нашлось</value>
+        <value>Ничего не нашлось. Вот страница поиска, посмотрите сами: </value>
     </data>
     <data name="CantProcessMessage" xml:space="preserve">
         <value>Я Вас не понял. Не знаю что с этим делать. Вы можете написать /help и я расскажу, как я работаю.</value>

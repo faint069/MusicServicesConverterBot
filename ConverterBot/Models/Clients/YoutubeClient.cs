@@ -15,15 +15,21 @@ namespace ConverterBot.Models.Clients
     {
     }
 
-		public IMusic ParseUri( string Uri )
+		public IMusic ParseUri( string uri )
     {
       return null;
     }
 
 		public string SearchMusic( IMusic musicToSearch )
-		{
-			return "https://music.youtube.com/search?q=" + 
-			       musicToSearch.QueryString(  ).Replace( ' ', '+' );
-		}
-	}
+    {
+      return GetSearchUri( musicToSearch );
+    }
+
+    public string GetSearchUri( IMusic toSearch )
+    {
+      return string.Concat( "https://music.youtube.com/search?q=",
+                            toSearch.QueryString(  ).Replace( ' ', '+' ) );
+      
+    }
+  }
 }

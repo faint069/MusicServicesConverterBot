@@ -160,6 +160,12 @@ namespace ConverterBot.Models.Clients
       return null;
     }
 
+    public string GetSearchUri( IMusic toSearch )
+    {
+      return string.Concat( "https://music.yandex.ru/search?text=", 
+                            toSearch.QueryString( ).Replace( " ", "%20" ) );
+    }
+
     private string BuildUri( YSearchTrackModel track )
     {
       //https://music.yandex.ru/album/3258239/track/3736259

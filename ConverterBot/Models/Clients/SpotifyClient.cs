@@ -87,29 +87,7 @@ namespace ConverterBot.Models.Clients
       return null;
 		}
 
-		private string NormalizeSpotifyUri( string uri )
-		{
-			if ( uri.Contains( "tospotify" ) )
-			{
-				const string HTMLPattern = "(https://open.spotify.com).*?(\")";
-				const string URiPattern = @"(https://link\.tospotify\.com).*?($|\s)";
-				uri = Regex.Match( uri, URiPattern ).Value.TrimEnd();
-				WebClient wc = new WebClient(  );
-				wc.Headers.Add ("user-agent", "MusicServicesConverterBot");
-				string resp = wc.DownloadString( uri );
-
-				uri = Regex.Match( resp, HTMLPattern ).Value.TrimEnd('"');
-			}
-			
-			if ( uri.Contains( "?" ) )
-			{
-				uri = uri.Split( "?" ).First( );
-			}
-
-			return uri;
-		}
-
-		public string SearchMusic( IMusic musicToSearch )
+    public string SearchMusic( IMusic musicToSearch )
 		{
 			 switch ( musicToSearch )
       {
@@ -177,6 +155,34 @@ namespace ConverterBot.Models.Clients
       }
 
       return null;
+    }
+
+    public string GetSearchUri( IMusic toSearch )
+    {
+      return string.Concat( "https://open.spotify.com/search/", 
+                            toSearch.QueryString( ).Replace( " ", "%20" ) );
+    }
+
+    private string NormalizeSpotifyUri( string uri )
+    {
+      if ( uri.Contains( "tospotify" ) )
+      {
+        const string HTMLPattern = "(https://open.spotify.com).*?(\")";
+        const string URiPattern = @"(https://link\.tospotify\.com).*?($|\s)";
+        uri = Regex.Match( uri, URiPattern ).Value.TrimEnd();
+        WebClient wc = new WebClient(  );
+        wc.Headers.Add ("user-agent", "MusicServicesConverterBot");
+        string resp = wc.DownloadString( uri );
+
+        uri = Regex.Match( resp, HTMLPattern ).Value.TrimEnd('"');
+      }
+			
+      if ( uri.Contains( "?" ) )
+      {
+        uri = uri.Split( "?" ).First( );
+      }
+
+      return uri;
     }
 
     private string BuildUri( FullTrack sTrack )

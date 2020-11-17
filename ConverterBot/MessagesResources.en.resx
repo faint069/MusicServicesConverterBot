@@ -31,7 +31,7 @@
         <value>Setup is over. Now in this chat are: </value>
     </data>
     <data name="MusicNotFoundMessage" xml:space="preserve">
-        <value>Sorry, I cant't found anything</value>
+        <value>Sorry, I cant't found anything. Here is Search Results, You can check it Yourself: </value>
     </data>
     <data name="CantProcessMessage" xml:space="preserve">
         <value>Sorry, I don't know what to do whith this request. You can send /help to see how I'm working.</value>

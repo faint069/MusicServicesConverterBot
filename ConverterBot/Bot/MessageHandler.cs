@@ -107,7 +107,8 @@ namespace ConverterBot.Bot
             IClient outClient =
               Services.GetClientFromFriendlyName( servicesInChat.Single( _ => _ != inClient.FriendlyName ) );
             string reply = outClient.SearchMusic( parsedMusic ) ??
-                           Messages.MusicNotFound.GetLocalized( message.From.LanguageCode );
+                           Messages.MusicNotFound.GetLocalized( message.From.LanguageCode ) + 
+                           outClient.GetSearchUri( parsedMusic );
 
             Bot.Client.SendTextMessageAsync( message.Chat.Id, reply );
           }
