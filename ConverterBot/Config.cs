@@ -14,6 +14,7 @@ namespace ConverterBot
     private static readonly string              _spotify_client_secret;
     private static readonly string              _ym_login;
     private static readonly string              _ym_password;
+    private static readonly string              _youtube_api_key;
     private static readonly string              _telegram_token;
     private static readonly List<string>        _smocking_bot_stickers;
 
@@ -35,6 +36,9 @@ namespace ConverterBot
       _ym_password =           config_builder.GetSection( "Authorization" )
         .GetSection( "YM" )
         ["Password"];
+      _ym_password =           config_builder.GetSection( "Authorization" )
+        .GetSection( "Youtube" )
+        ["ApiKey"];
       _telegram_token =        config_builder.GetSection( "Authorization" )
         .GetSection( "Telegram" )
         ["Token"];
@@ -55,6 +59,8 @@ namespace ConverterBot
     public static string        YMLogin =>             _ym_login;
         
     public static string        YMPassword =>          _ym_password;
+
+    public static string        YoutubeApiKey =>          _youtube_api_key;
         
     public static string        TelegramToken =>       _telegram_token;
 
