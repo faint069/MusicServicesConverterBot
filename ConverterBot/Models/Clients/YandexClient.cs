@@ -136,18 +136,26 @@ namespace ConverterBot.Models.Clients
               																								.Result;
           foreach ( YSearchArtistModel ymArtist in response.Artists.Results )
           {
-            if (string.Equals( artistToSearch.Name, ymArtist.Name, StringComparison.OrdinalIgnoreCase ) )
+            if ( artistToSearch.Equals( new Artist(ymArtist.Name, null ) ) )
             {
-              var ymArtistBrief = yandexMusicClient.Artist.Get( yAuthStorage,
-                																								ymArtist.Id )
-                																								.Result;
-              foreach ( YAlbum ymAlbum in ymArtistBrief.Albums )
+              if ( artistToSearch.IsSampleAlbumEmpty )
               {
-                if ( artistToSearch.SampleAlbum.Equals( new Album( ymAlbum.Title, 
-                 																												ymArtist.Name,
-                 																												ymAlbum.Year.ToString( )) ) )
+                return BuildUri( ymArtist );
+              }
+              else
+              {
+                var ymArtistBrief = yandexMusicClient.Artist.Get( yAuthStorage,
+                                                                  ymArtist.Id )
+                                                            .Result;
+                foreach ( YAlbum ymAlbum in ymArtistBrief.Albums )
                 {
-                  return BuildUri( ymArtist );
+                  if ( artistToSearch.SampleAlbum.Equals( new Album( ymAlbum.Title, 
+                                                                           ymArtist.Name,
+                                                                           ymAlbum.Year.ToString( )) ) )
+                  {
+                    return BuildUri( ymArtist );
+                  
+                  }
                 }
               }
             }

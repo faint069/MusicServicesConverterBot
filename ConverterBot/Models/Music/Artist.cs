@@ -27,10 +27,10 @@ namespace ConverterBot.Models.Music
     /// <param name="spotifyId">ID Артиста в Спотифай</param>
     public Artist( string name, Album sampleAlbum, string yandexId = null, string spotifyId = null )
     {
+      _name        = name.Trim( );
       _sampleAlbum = sampleAlbum;
-      _yandexId = yandexId;
-      _spotifyId = spotifyId;
-      _name = name.Trim( );
+      _yandexId    = yandexId;
+      _spotifyId   = spotifyId;
     }
 
     public string Name => _name;
@@ -43,24 +43,20 @@ namespace ConverterBot.Models.Music
 
     public string QueryString => $"{_name}";
 
+    public bool IsSampleAlbumEmpty => _sampleAlbum == null;
+
     public override string ToString( )
     {
-      return $"Artist: {_name}\nSample Album:\n{_sampleAlbum.ToString( )}";
+      return $"Artist: {_name}\nSample Album:\n{( _sampleAlbum != null? _sampleAlbum.ToString( ): "" )}";
     }
 
     public bool Equals( IMusic other )
     {
       if ( other is Artist otherArtist )
       {
-        if ( otherArtist.SampleAlbum == null )
-        {
-          return string.Equals( _name, otherArtist.Name, StringComparison.OrdinalIgnoreCase );
-        }
-
-        return string.Equals( _name, otherArtist.Name, StringComparison.OrdinalIgnoreCase ) &&
-               _sampleAlbum.Equals( otherArtist.SampleAlbum );
+        return string.Equals( _name, otherArtist.Name, StringComparison.OrdinalIgnoreCase );
       }
-
+      
       return false;
     }
   }

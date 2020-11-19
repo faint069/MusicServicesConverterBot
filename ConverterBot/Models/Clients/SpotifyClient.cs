@@ -136,16 +136,23 @@ namespace ConverterBot.Models.Clients
                                     .Result;
           foreach ( FullArtist sArtist in response.Artists.Items )
           {
-            if ( sArtist.Name == artistToSearch.Name )
+            if ( artistToSearch.Equals( new Artist( sArtist.Name, null ) ) )
             {
-              List<SimpleAlbum> sArtistAlbums = _spotifyClient.Artists.GetAlbums( sArtist.Id ).Result.Items;
-              foreach ( SimpleAlbum sSampleAlbum in sArtistAlbums )
+              if ( artistToSearch.IsSampleAlbumEmpty )
               {
-                if ( artistToSearch.SampleAlbum.Equals( new Album( sSampleAlbum.Name,
-                  																			sSampleAlbum.Artists.First().Name,
-                  																			sSampleAlbum.ReleaseDate ) ) )
+                return BuildUri( sArtist );
+              }
+              else
+              {
+                List<SimpleAlbum> sArtistAlbums = _spotifyClient.Artists.GetAlbums( sArtist.Id ).Result.Items;
+                foreach ( SimpleAlbum sSampleAlbum in sArtistAlbums )
                 {
-                  return BuildUri( sArtist );
+                  if ( artistToSearch.SampleAlbum.Equals( new Album( sSampleAlbum.Name,
+                    																			sSampleAlbum.Artists.First().Name,
+                  	  																		sSampleAlbum.ReleaseDate ) ) )
+                  {
+                    return BuildUri( sArtist );
+                  }
                 }
               }
             }

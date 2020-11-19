@@ -16,7 +16,6 @@ namespace ConverterBot.Models.Music
     /// </summary>
     public Album( )
     {
-            
     }
 
     /// <summary>
@@ -29,9 +28,9 @@ namespace ConverterBot.Models.Music
     /// <param name="spotifyId">ID альбома в Спотифай</param>
     public Album( string title, string artist, string year, string yandexId = null, string spotifyId = null )
     {
-      _title = title.Trim( );
-      _artist = artist.Trim( );
-      _yandexId = yandexId;
+      _title     = title.Trim( );
+      _artist    = artist.Trim( );
+      _yandexId  = yandexId;
       _spotifyId = spotifyId;
 
       //Если пришла полная дата, оставляем только год
