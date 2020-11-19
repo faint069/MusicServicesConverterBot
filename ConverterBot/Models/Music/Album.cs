@@ -60,10 +60,7 @@ namespace ConverterBot.Models.Music
     /// Строка для поиска
     /// </summary>
     /// <returns></returns>
-    public string QueryString( )
-    {
-      return $"{_title}";
-    }
+    public string QueryString => $"{_title}";
 
     public override string ToString( )
     {

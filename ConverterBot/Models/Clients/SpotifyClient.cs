@@ -95,8 +95,8 @@ namespace ConverterBot.Models.Clients
         {
           SearchResponse response = _spotifyClient.Search.Item(
                                     new SearchRequest( SearchRequest.Types.Track,
-                                        musicToSearch.QueryString( ) ) )
-            .Result;
+                                        musicToSearch.QueryString ) )
+                                    .Result;
           foreach ( FullTrack sTrack in response.Tracks.Items )
           {
             if ( musicToSearch.Equals( new Track( sTrack.Name,
@@ -114,7 +114,7 @@ namespace ConverterBot.Models.Clients
         {
           SearchResponse response = _spotifyClient.Search.Item(
               											new SearchRequest( SearchRequest.Types.Album,
-              											    musicToSearch.QueryString( ) ) )
+              											    musicToSearch.QueryString ) )
                                     .Result;
           foreach ( SimpleAlbum sAlbum in response.Albums.Items )
           {
@@ -132,8 +132,8 @@ namespace ConverterBot.Models.Clients
         {
           SearchResponse response = _spotifyClient.Search.Item(
               											new SearchRequest( SearchRequest.Types.Artist,
-              											    musicToSearch.QueryString( ) ) )
-            .Result;
+              											    musicToSearch.QueryString ) )
+                                    .Result;
           foreach ( FullArtist sArtist in response.Artists.Items )
           {
             if ( sArtist.Name == artistToSearch.Name )
@@ -160,7 +160,7 @@ namespace ConverterBot.Models.Clients
     public string GetSearchUri( IMusic toSearch )
     {
       return string.Concat( "https://open.spotify.com/search/", 
-                            toSearch.QueryString( ).Replace( " ", "%20" ) );
+                            toSearch.QueryString.Replace( " ", "%20" ) );
     }
 
     private string NormalizeSpotifyUri( string uri )

@@ -4,8 +4,8 @@
   {
     string YandexId { get; }
     string SpotifyId { get; }
-
-    public string QueryString( );
+    public string QueryString { get; }
+  
     public string ToString( );
     public bool Equals( IMusic other );
   }

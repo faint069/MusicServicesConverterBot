@@ -47,7 +47,7 @@ namespace ConverterBot.Models.Clients
 		    var ytTrack = resp.Items.First( ).Snippet;
 		    return new Track( ytTrack.Title, 
 													ytTrack.ChannelTitle.Split( '-' ).First(), 
-													ytTrack.Tags.Count > 1? ytTrack.Tags[^1]: ytTrack.Tags[0],
+													ytTrack.Tags.Count > 1? ytTrack.Tags[^2]: ytTrack.Tags[0],
 													0 );
 	    }
 	    
@@ -90,8 +90,7 @@ namespace ConverterBot.Models.Clients
 
 		    return new Artist( ytArtist.Snippet.Title.Split( "-" ).First(), 
 													 null );
-
-	    }
+      }
       return null;
     }
 
@@ -108,7 +107,7 @@ namespace ConverterBot.Models.Clients
     public string GetSearchUri( IMusic toSearch )
     {
       return string.Concat( "https://music.youtube.com/search?q=",
-                            toSearch.QueryString(  ).Replace( ' ', '+' ) );
+                            toSearch.QueryString.Replace( ' ', '+' ) );
       
     }
   }

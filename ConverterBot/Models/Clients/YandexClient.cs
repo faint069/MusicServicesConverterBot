@@ -97,7 +97,7 @@ namespace ConverterBot.Models.Clients
         case Track _:
         {
           YSearch response = yandexMusicClient.Search.Track( yAuthStorage,
-              																							 musicToSearch.QueryString( ) )
+              																							 musicToSearch.QueryString )
               																							 .Result;
           foreach ( YSearchTrackModel ymTrack in response.Tracks.Results )
           {
@@ -115,7 +115,7 @@ namespace ConverterBot.Models.Clients
         case Album _:
         {
           YSearch response = yandexMusicClient.Search.Albums( yAuthStorage, 
-            																									musicToSearch.QueryString( ) )
+            																									musicToSearch.QueryString )
             																									.Result;
           foreach ( YSearchAlbumModel ymAlbum in response.Albums.Results )
           {
@@ -132,7 +132,7 @@ namespace ConverterBot.Models.Clients
         case Artist artistToSearch:
         {
           YSearch response = yandexMusicClient.Search.Artist( yAuthStorage, 
-              																								musicToSearch.QueryString( ) )
+              																								musicToSearch.QueryString )
               																								.Result;
           foreach ( YSearchArtistModel ymArtist in response.Artists.Results )
           {
@@ -163,7 +163,7 @@ namespace ConverterBot.Models.Clients
     public string GetSearchUri( IMusic toSearch )
     {
       return string.Concat( "https://music.yandex.ru/search?text=", 
-                            toSearch.QueryString( ).Replace( " ", "%20" ) );
+                            toSearch.QueryString.Replace( " ", "%20" ) );
     }
 
     private string BuildUri( YSearchTrackModel track )

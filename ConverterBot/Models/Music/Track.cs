@@ -50,10 +50,8 @@ namespace ConverterBot.Models.Music
 
     public string SpotifyId => _spotifyId;
 
-    public string QueryString( )
-    {
-      return $"{_artist} {_title}";
-    }
+    public string QueryString => $"{_artist} {_title}";
+
 
     public override string ToString( )
     {
