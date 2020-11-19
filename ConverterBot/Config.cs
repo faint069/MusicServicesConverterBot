@@ -21,35 +21,35 @@ namespace ConverterBot
     static Config( )
     {
       IConfigurationRoot config_builder = new ConfigurationBuilder( )
-        .AddJsonFile( "appsettings.json" )
-        .Build( );
+        																			.AddJsonFile( "appsettings.json" )
+        																			.Build( );
 
       _spotify_client_id =     config_builder.GetSection( "Authorization" )
-        .GetSection( "Spotify" )
-        ["Client_ID"];
+                                             .GetSection( "Spotify" )
+                                             ["Client_ID"];
       _spotify_client_secret = config_builder.GetSection( "Authorization" )
-        .GetSection( "Spotify" )
-        ["Client_Secret"];
+                                             .GetSection( "Spotify" )
+                                             ["Client_Secret"];
       _ym_login =              config_builder.GetSection( "Authorization" )
-        .GetSection( "YM" )
-        ["Login"];
+                                             .GetSection( "YM" )
+                                             ["Login"];
       _ym_password =           config_builder.GetSection( "Authorization" )
-        .GetSection( "YM" )
-        ["Password"];
-      _ym_password =           config_builder.GetSection( "Authorization" )
-        .GetSection( "Youtube" )
-        ["ApiKey"];
+                                             .GetSection( "YM" )
+                                             ["Password"];
+      _youtube_api_key =       config_builder.GetSection( "Authorization" )
+                                             .GetSection( "Youtube" )
+                                             ["ApiKey"];
       _telegram_token =        config_builder.GetSection( "Authorization" )
-        .GetSection( "Telegram" )
-        ["Token"];
+                                             .GetSection( "Telegram" )
+                                             ["Token"];
       _log_level =             ( LogEventLevel ) Enum.Parse( typeof( LogEventLevel ),
         config_builder.GetSection( "Logging" )
-          ["Log_Level"] );
+																	 ["Log_Level"] );
       _log_path =              config_builder.GetSection( "Logging" )
-        ["Log_Path"];
+																													["Log_Path"];
 
       _smocking_bot_stickers = config_builder.GetSection( "Stickers:SmokingBot" )
-        .Get<List<string>>( );
+																						 .Get<List<string>>( );
     }
 
     public static string        SotifyClientID =>      _spotify_client_id;
@@ -60,7 +60,7 @@ namespace ConverterBot
         
     public static string        YMPassword =>          _ym_password;
 
-    public static string        YoutubeApiKey =>          _youtube_api_key;
+    public static string        YoutubeApiKey =>       _youtube_api_key;
         
     public static string        TelegramToken =>       _telegram_token;
 
