@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Transactions;
 
 namespace ConverterBot.Models.Music
 {
@@ -49,14 +50,18 @@ namespace ConverterBot.Models.Music
 
     public bool Equals( IMusic other )
     {
-      if ( !( other is Artist ) )
+      if ( other is Artist otherArtist )
       {
-        return false;
+        if ( otherArtist.SampleAlbum == null )
+        {
+          return string.Equals( _name, otherArtist.Name, StringComparison.OrdinalIgnoreCase );
+        }
+
+        return string.Equals( _name, otherArtist.Name, StringComparison.OrdinalIgnoreCase ) &&
+               _sampleAlbum.Equals( otherArtist.SampleAlbum );
       }
 
-      Artist otherArtist = ( Artist ) other;
-      return string.Equals( _name, otherArtist.Name, StringComparison.OrdinalIgnoreCase) &&
-             _sampleAlbum.Equals( otherArtist.SampleAlbum );
+      return false;
     }
   }
 }

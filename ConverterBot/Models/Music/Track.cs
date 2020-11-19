@@ -60,17 +60,16 @@ namespace ConverterBot.Models.Music
 
     public bool Equals( IMusic other )
     {
-      if ( !( other is Track ) )
+      if ( other is Track otherTrack )
       {
-        return false;
+        return ( _title.Contains( otherTrack.Title, StringComparison.OrdinalIgnoreCase ) ||
+                 otherTrack.Title.Contains( _title, StringComparison.OrdinalIgnoreCase ) ) &&
+               ( _album.Contains( otherTrack.Album, StringComparison.OrdinalIgnoreCase ) ||
+                 otherTrack.Album.Contains( _album, StringComparison.OrdinalIgnoreCase ) ) &&
+               string.Equals( _artist, otherTrack.Artist, StringComparison.OrdinalIgnoreCase );
       }
-            
-      Track otherTrack = ( Track ) other;
-      return ( _title.Contains( otherTrack.Title, StringComparison.OrdinalIgnoreCase ) ||
-               otherTrack.Title.Contains( _title, StringComparison.OrdinalIgnoreCase ) ) &&
-             ( _album.Contains( otherTrack.Album, StringComparison.OrdinalIgnoreCase ) ||
-               otherTrack.Album.Contains( _album, StringComparison.OrdinalIgnoreCase ) ) &&
-             string.Equals( _artist, otherTrack.Artist, StringComparison.OrdinalIgnoreCase );
-    }
+      
+      return false;
+      }
   }
 }

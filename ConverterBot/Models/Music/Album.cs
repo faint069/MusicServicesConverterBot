@@ -69,15 +69,14 @@ namespace ConverterBot.Models.Music
 
     public bool Equals( IMusic other )
     {
-      if ( !(other is Album) )
+      if ( other is Album otherAlbum )
       {
-        return false;
+        return ( _title.Contains( otherAlbum.Title, StringComparison.OrdinalIgnoreCase ) ||
+                 otherAlbum.Title.Contains( _title, StringComparison.OrdinalIgnoreCase) ) &&
+                 string.Equals( _artist, otherAlbum.Artist, StringComparison.OrdinalIgnoreCase );
       }
-
-      Album otherAlbum = ( Album ) other;
-      return ( _title.Contains( otherAlbum.Title, StringComparison.OrdinalIgnoreCase ) ||
-               otherAlbum.Title.Contains( _title, StringComparison.OrdinalIgnoreCase) ) &&
-             string.Equals( _artist, otherAlbum.Artist, StringComparison.OrdinalIgnoreCase );
+      
+      return false;
     }
   }
 }
