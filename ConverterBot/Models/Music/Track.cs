@@ -4,12 +4,12 @@ namespace ConverterBot.Models.Music
 {
   public class Track : IMusic
   {
-    private string _artist;
-    private string _title;
-    private string _album;
-    private int    _trackIndex;
-    private string _yandexId;
-    private string _spotifyId;
+    private readonly string _artist;
+    private readonly string _title;
+    private readonly string _album;
+    private readonly int    _trackIndex;
+    private readonly string _yandexId;
+    private readonly string _spotifyId;
 
     /// <summary>
     /// Пустой конструктор
@@ -30,9 +30,9 @@ namespace ConverterBot.Models.Music
     /// <param name="yandexId">ID трека в Яндекс Музыке</param>
     public Track( string title, string artist,  string album, int trackIndex, string spotifyId = null, string yandexId = null)
     {
-      _title = title;
-      _artist = artist;
-      _album = album;
+      _title = title.Trim( );
+      _artist = artist.Trim( );
+      _album = album.Trim( );
       _trackIndex = trackIndex;
       _spotifyId = spotifyId;
       _yandexId = yandexId;

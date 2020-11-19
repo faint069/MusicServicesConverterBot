@@ -4,10 +4,10 @@ namespace ConverterBot.Models.Music
 {
   public class Artist : IMusic
   {
-    private Album _sampleAlbum;
-    private string _name;
-    private string _yandexId;
-    private string _spotifyId;
+    private readonly Album  _sampleAlbum;
+    private readonly string _name;
+    private readonly string _yandexId;
+    private readonly string _spotifyId;
 
     /// <summary>
     /// Пустой конструктор
@@ -29,7 +29,7 @@ namespace ConverterBot.Models.Music
       _sampleAlbum = sampleAlbum;
       _yandexId = yandexId;
       _spotifyId = spotifyId;
-      _name = name;
+      _name = name.Trim( );
     }
 
     public string Name => _name;

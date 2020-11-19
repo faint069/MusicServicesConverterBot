@@ -5,11 +5,11 @@ namespace ConverterBot.Models.Music
 {
   public class Album : IMusic
   {
-    private string _title;
-    private string _artist;
-    private string _year;
-    private string _yandexId;
-    private string _spotifyId;
+    private readonly string _title;
+    private readonly string _artist;
+    private readonly string _year;
+    private readonly string _yandexId;
+    private readonly string _spotifyId;
 
     /// <summary>
     /// Пустой конструктор
@@ -29,8 +29,8 @@ namespace ConverterBot.Models.Music
     /// <param name="spotifyId">ID альбома в Спотифай</param>
     public Album( string title, string artist, string year, string yandexId = null, string spotifyId = null )
     {
-      _title = title;
-      _artist = artist;
+      _title = title.Trim( );
+      _artist = artist.Trim( );
       _yandexId = yandexId;
       _spotifyId = spotifyId;
 
