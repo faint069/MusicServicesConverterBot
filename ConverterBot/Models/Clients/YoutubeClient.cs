@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using ConverterBot.Models.Music;
 using Google.Apis.Services;
-using Google.Apis.Util;
 using Google.Apis.YouTube.v3;
+using Serilog;
 
 namespace ConverterBot.Models.Clients
 {
@@ -18,15 +18,15 @@ namespace ConverterBot.Models.Clients
 
     public YoutubeClient( )
     {
-      _youtubeService = new YouTubeService(new BaseClientService.Initializer()
+      Log.Information( "Connecting to Spotify..." );
+
+      _youtubeService = new YouTubeService( new BaseClientService.Initializer
       {
         ApiKey = Config.YoutubeApiKey,
         ApplicationName = "MusicServicesConverterBot"
-      });
+      } );
       
-      
-      // Call the search.list method to retrieve results matching the specified query term.
-
+      Log.Information( "Connection to Spotify successful" );
     }
 
 		public IMusic ParseUri( string uri )
@@ -43,8 +43,13 @@ namespace ConverterBot.Models.Clients
 		    var videoRequest = _youtubeService.Videos.List( "snippet" );
 		    videoRequest.Id = id;
 		    videoRequest.MaxResults = 1;
-		    var resp = videoRequest.Execute(  );
-		    var ytTrack = resp.Items.First( ).Snippet;
+        var resp = videoRequest.Execute( );
+        if ( resp == null || !resp.Items.Any( ) )
+        {
+          return null;
+        }
+        var ytTrack = resp.Items.First( ).Snippet;
+        
 		    return new Track( ytTrack.Title, 
 													ytTrack.ChannelTitle.Split( '-' ).First(), 
 													ytTrack.Tags.Count > 1? ytTrack.Tags[^2]: ytTrack.Tags[0],
@@ -55,29 +60,41 @@ namespace ConverterBot.Models.Clients
 	    {
 		    string id = uriParts.Last( ).Split( '=' ).Last( );
 
-
-		    var playlistRequest = _youtubeService.Playlists.List( "snippet" );
+        var playlistRequest = _youtubeService.Playlists.List( "snippet" );
 		    playlistRequest.Id = id;
 		    playlistRequest.MaxResults = 1;
 		    var playlistResp = playlistRequest.Execute(  );
-		    var ytAlbum = playlistResp.Items.First( );
+        if ( playlistResp == null || !playlistResp.Items.Any( ) )
+        {
+          return null;
+        }
+        var ytAlbum = playlistResp.Items.First( );
 		    
 		    var playlistItemsRequest = _youtubeService.PlaylistItems.List( "contentDetails" );
 		    playlistItemsRequest.PlaylistId = ytAlbum.Id;
 		    playlistItemsRequest.MaxResults = 1;
 		    var channelResp = playlistItemsRequest.Execute( ); 
-		    var videoId = channelResp.Items.First( ).ContentDetails.VideoId; 
+        if ( channelResp == null || !channelResp.Items.Any( ) )
+        {
+          return null;
+        }
+        var videoId = channelResp.Items.First( ).ContentDetails.VideoId; 
 		    
 		    var videoRequest = _youtubeService.Videos.List( "snippet" );
 		    videoRequest.Id = videoId;
 		    videoRequest.MaxResults = 1;
 		    var videoResp = videoRequest.Execute(  );
+        if ( videoResp == null || !videoResp.Items.Any( ) )
+        {
+          return null;
+        }
 		    var ytTrack = videoResp.Items.First( ).Snippet;
+        
 		    return new Album( ytAlbum.Snippet.Title.Split( '-' ).Last(), 
 													ytTrack.ChannelTitle.Split( '-' ).First(),
 													"" );
-		    
-	    }
+      }
+      
 	    if (uri.Contains( "channel" ))
 	    {
 		    var id = uriParts.Last( );
@@ -86,6 +103,10 @@ namespace ConverterBot.Models.Clients
 		    channelRequest.Id = id;
 		    channelRequest.MaxResults = 1;
 		    var channelResp = channelRequest.Execute( );
+        if ( channelResp == null || !channelResp.Items.Any( ) )
+        {
+          return null;
+        }
 		    var ytArtist = channelResp.Items.First( );
 
 		    return new Artist( ytArtist.Snippet.Title.Split( "-" ).First(), 
