@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using ConverterBot.Misc;
 using ConverterBot.Models.Music;
 using Serilog;
 using SpotifyAPI.Web;
@@ -99,17 +100,20 @@ namespace ConverterBot.Models.Clients
                                     .Result;
           foreach ( FullTrack sTrack in response.Tracks.Items )
           {
-            if ( musicToSearch.Equals( new Track( sTrack.Name,
-                											 sTrack.Artists.First( ).Name,
-                											 sTrack.Album.Name,
-                											 0 ) ) )
+            if ( musicToSearch.Equals( new Track( sTrack ) ) )
             {
               return BuildUri( sTrack );
             }
           }
+          int count = response.Tracks.Items.Count >= 5 ? 5 : response.Tracks.Items.Count;
 
-          break;
+          List<(Track, string)> tracksWithUris = response.Tracks.Items.Take( count )
+                                                                      .Select( _ => ( new Track( _ ), BuildUri( _ ) ) )
+                                                                      .ToList( );
+
+          return InlineUriFormatter.FormatTracks( tracksWithUris );
         }
+        
         case Album _:
         {
           SearchResponse response = _spotifyClient.Search.Item(
@@ -118,16 +122,21 @@ namespace ConverterBot.Models.Clients
                                     .Result;
           foreach ( SimpleAlbum sAlbum in response.Albums.Items )
           {
-            if ( musicToSearch.Equals( new Album( sAlbum.Name,
-              												 sAlbum.Artists.First( ).Name,
-              												 sAlbum.ReleaseDate ) ) )
+            if ( musicToSearch.Equals( new Album( sAlbum ) ) )
             {
               return BuildUri( sAlbum );
             }
           }
+          
+          int count = response.Albums.Items.Count >= 5 ? 5 : response.Albums.Items.Count;
 
-          break;
+          List<(Album, string)> albumsWithUris = response.Albums.Items.Take( count )
+            .Select( _ => ( new Album( _ ), BuildUri( _ ) ) )
+            .ToList( );
+
+          return InlineUriFormatter.FormatAlbums( albumsWithUris );
         }
+        
         case Artist artistToSearch:
         {
           SearchResponse response = _spotifyClient.Search.Item(
@@ -136,7 +145,7 @@ namespace ConverterBot.Models.Clients
                                     .Result;
           foreach ( FullArtist sArtist in response.Artists.Items )
           {
-            if ( artistToSearch.Equals( new Artist( sArtist.Name, null ) ) )
+            if ( artistToSearch.Equals( new Artist( sArtist ) ) )
             {
               if ( artistToSearch.IsSampleAlbumEmpty )
               {
@@ -147,9 +156,7 @@ namespace ConverterBot.Models.Clients
                 List<SimpleAlbum> sArtistAlbums = _spotifyClient.Artists.GetAlbums( sArtist.Id ).Result.Items;
                 foreach ( SimpleAlbum sSampleAlbum in sArtistAlbums )
                 {
-                  if ( artistToSearch.SampleAlbum.Equals( new Album( sSampleAlbum.Name,
-                    																			sSampleAlbum.Artists.First().Name,
-                  	  																		sSampleAlbum.ReleaseDate ) ) )
+                  if ( artistToSearch.SampleAlbum.Equals( new Album( sSampleAlbum ) ) )
                   {
                     return BuildUri( sArtist );
                   }
@@ -157,9 +164,17 @@ namespace ConverterBot.Models.Clients
               }
             }
           }
-          break;
+
+
+          int count = response.Artists.Items.Count >= 5 ? 5 : response.Artists.Items.Count;
+
+          List<(Artist, string)> artistsToSearch = response.Artists.Items.Take( count )
+                                                                         .Select( _ => ( new Artist( _ ), BuildUri( _ ) ) )
+                                                                         .ToList( );
+          
+           return InlineUriFormatter.FormatArtists( artistsToSearch );        
+          }
         }
-      }
 
       return null;
     }

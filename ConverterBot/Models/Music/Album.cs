@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using SpotifyAPI.Web;
+using Yandex.Music.Api.Models.Album;
 using Yandex.Music.Api.Models.Search.Album;
 
 namespace ConverterBot.Models.Music
@@ -33,14 +35,40 @@ namespace ConverterBot.Models.Music
       _artist    = artist.Trim( );
       _yandexId  = yandexId;
       _spotifyId = spotifyId;
-      _year       = year;
+      _year      = year;
     }
 
+    /// <summary>
+    /// Конструктор из поиска по альбомам яндекс клиента
+    /// </summary>
+    /// <param name="yAlbum"></param>
     public Album( YSearchAlbumModel yAlbum )
     {
       _title  = yAlbum.Title;
       _artist = yAlbum.Artists.First( ).Name;
       _year   = yAlbum.Year.ToString( );
+    }
+
+    /// <summary>
+    /// Конструктор из альбома яндекс клиента
+    /// </summary>
+    /// <param name="yAlbum"></param>
+    public Album( YAlbum yAlbum )
+    {
+      _title  = yAlbum.Title;
+      _artist = yAlbum.Artists.First( ).Name;
+      _year   = yAlbum.Year.ToString( );
+    }
+
+    /// <summary>
+    /// Конструктор из альбома клиента спотифай
+    /// </summary>
+    /// <param name="sAlbum"></param>
+    public Album( SimpleAlbum sAlbum )
+    {
+      _title  = sAlbum.Name;
+      _artist = sAlbum.Artists.First( ).Name;
+      _year   = sAlbum.ReleaseDate;
     }
 
     public string Title     => _title;

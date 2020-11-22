@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using SpotifyAPI.Web;
 using Yandex.Music.Api.Models.Search.Track;
 
 namespace ConverterBot.Models.Music
@@ -39,12 +40,28 @@ namespace ConverterBot.Models.Music
       _spotifyId  = spotifyId;
       _yandexId   = yandexId;
     }
-
-    public Track(YSearchTrackModel yTrack)
+    
+    /// <summary>
+    /// Конструктор из трека яндекс клиента
+    /// </summary>
+    /// <param name="yTrack"></param>
+    public Track( YSearchTrackModel yTrack )
     {
-      _title  = yTrack.Title;
-      _artist = yTrack.Artists.First().Name;
-      _album  = yTrack.Albums.First().Title;
+      _title      = yTrack.Title;
+      _artist     = yTrack.Artists.First().Name;
+      _album      = yTrack.Albums.First().Title;
+      _trackIndex = 0;
+    }
+    
+    /// <summary>
+    /// Конструктор из трека Клиента спотифай
+    /// </summary>
+    /// <param name="sTrack"></param>
+    public Track( FullTrack sTrack )
+    {
+      _title      = sTrack.Name;
+      _artist     = sTrack.Artists.First( ).Name;
+      _album      = sTrack.Album.Name;
       _trackIndex = 0;
     }
 

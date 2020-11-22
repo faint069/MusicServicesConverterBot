@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Transactions;
+using SpotifyAPI.Web;
 using Yandex.Music.Api.Models.Search.Artist;
 
 namespace ConverterBot.Models.Music
@@ -34,12 +34,25 @@ namespace ConverterBot.Models.Music
       _spotifyId = spotifyId;
     }
 
+    /// <summary>
+    /// Конструктор из артиста янддекс клиента
+    /// </summary>
+    /// <param name="yArtist"></param>
     public Artist( YSearchArtistModel yArtist )
     {
       _name        = yArtist.Name;
       _sampleAlbum = null;
     }
 
+    /// <summary>
+    /// Конструктор из артиста клиента спотифай
+    /// </summary>
+    public Artist( FullArtist sArtist )
+    {
+      _name = sArtist.Name;
+      _sampleAlbum = null;
+    }
+    
     public string Name        => _name;
 
     public Album  SampleAlbum => _sampleAlbum;

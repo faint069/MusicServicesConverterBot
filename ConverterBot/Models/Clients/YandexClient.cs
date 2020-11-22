@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ConverterBot.Misc;
 using ConverterBot.Models.Music;
@@ -159,12 +158,9 @@ namespace ConverterBot.Models.Clients
                                                             .Result;
                 foreach ( YAlbum ymAlbum in ymArtistBrief.Albums )
                 {
-                  if ( artistToSearch.SampleAlbum.Equals( new Album( ymAlbum.Title, 
-                                                                           ymArtist.Name,
-                                                                           ymAlbum.Year.ToString( )) ) )
+                  if ( artistToSearch.SampleAlbum.Equals( new Album( ymAlbum ) ) )
                   {
                     return BuildUri( ymArtist );
-                  
                   }
                 }
               }
