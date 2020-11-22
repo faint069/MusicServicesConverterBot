@@ -49,8 +49,8 @@ namespace ConverterBot.Bot
                    $"Text: {message.Text} " + 
                    $"Type: {message.Type} " );
 
-      Bot.Client.SendTextMessageAsync( message.Chat.Id, 
-                                       Messages.CantProcess.GetLocalized( message.From.LanguageCode ) );
+      //Bot.Client.SendTextMessageAsync( message.Chat.Id, 
+      //                                 Messages.CantProcess.GetLocalized( message.From.LanguageCode ) );
     }
         
     private static void HandleText( Message message )
@@ -107,7 +107,7 @@ namespace ConverterBot.Bot
             {
               Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
               IClient outClient =
-                Services.GetClientFromFriendlyName( servicesInChat.Single( _ => _ != inClient.FriendlyName ) );
+                Services.GetClientFromFriendlyName( servicesInChat.First( _ => _ != inClient.FriendlyName ) );
               string reply = outClient.SearchMusic( parsedMusic ) ??
                              Messages.MusicNotFound.GetLocalized( message.From.LanguageCode ) + 
                              outClient.GetSearchUri( parsedMusic );

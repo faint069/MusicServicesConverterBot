@@ -11,11 +11,12 @@ namespace ConverterBot
   {
     private static void Main( )
     {
-      if ( !Directory.Exists( Config.LogPath ) )
+      string logDir = $"{Directory.GetCurrentDirectory( )}{Path.DirectorySeparatorChar}logs";
+      if ( !Directory.Exists( logDir ) )
       {
-        Directory.CreateDirectory( Config.LogPath );
+        Directory.CreateDirectory( logDir );
       }
-
+      
       Log.Logger = new LoggerConfiguration( )
         .MinimumLevel.Debug( )
         .MinimumLevel.Override( "Microsoft", LogEventLevel.Warning )
@@ -23,7 +24,7 @@ namespace ConverterBot
         .MinimumLevel.Override( "Telegram.Bot", Config.LogLevel )
         .MinimumLevel.Override( "Yandex.Music.Api", LogEventLevel.Information )
         .Enrich.FromLogContext( )
-        .WriteTo.File( $"{Config.LogPath}{DateTime.Now:yyyy-MM-dd-hh_mm_ss}.log",
+        .WriteTo.File( $"{logDir}{Path.DirectorySeparatorChar}{DateTime.Now:yyyy-MM-dd-hh_mm_ss}.log",
           LogEventLevel.Debug )
         .WriteTo.Console( LogEventLevel.Debug )
         .CreateLogger( );
