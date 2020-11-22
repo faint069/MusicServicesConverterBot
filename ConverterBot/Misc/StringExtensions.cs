@@ -1,4 +1,6 @@
-﻿namespace ConverterBot.Misc
+﻿using System;
+
+namespace ConverterBot.Misc
 {
   public static class StringExtensions
   {
@@ -38,6 +40,11 @@
       }
 
       return input;
+    }
+
+    public static bool IsUri( this string input )
+    {
+      return Uri.IsWellFormedUriString( input, UriKind.Absolute );
     }
   }
 }

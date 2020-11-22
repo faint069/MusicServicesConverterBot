@@ -112,7 +112,7 @@ namespace ConverterBot.Bot
                              Messages.MusicNotFound.GetLocalized( message.From.LanguageCode ) + 
                              outClient.GetSearchUri( parsedMusic );
 
-              Bot.Client.SendTextMessageAsync( message.Chat.Id, reply, ParseMode.Markdown );
+              Bot.Client.SendTextMessageAsync( message.Chat.Id, reply, ParseMode.Markdown, !reply.IsUri(  ));
             }
             else
             {
