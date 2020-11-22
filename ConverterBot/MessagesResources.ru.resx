@@ -18,16 +18,10 @@
         <value>Для этого чата не установлены сервисы между которыми я мог бы конвертировать. Используйте команду /set_services, что бы сделать это</value>
     </data>
     <data name="ServicesInChatMessage" xml:space="preserve">
-        <value>Сервисы для конвертации в этом чате:</value>
+        <value>Сервисы для конвертации в этом чате: </value>
     </data>
     <data name="SetServicesFirstMessage" xml:space="preserve">
-        <value>Выберите первый сервис</value>
-    </data>
-    <data name="SetServicesSecondMessage" xml:space="preserve">
-        <value>Выберите второй сервис</value>
-    </data>
-    <data name="SetServicesThirdMessage" xml:space="preserve">
-        <value>Настройка завершена. Теперь в этом чате: </value>
+        <value>Выберите сервисы для этого чата. Вы можете выбрать два или больше.</value>
     </data>
     <data name="MusicNotFoundMessage" xml:space="preserve">
         <value>Ничего не нашлось. Вот страница поиска, посмотрите сами: </value>
@@ -46,5 +40,8 @@
     </data>
     <data name="WrongUriMessage" xml:space="preserve">
         <value>Это не ссылка на стриминговый сервис или я еще не умею работать с этим сервисом или с этим типом контента.</value>
+    </data>
+    <data name="NotEnoughServicesMessage" xml:space="preserve">
+        <value>Пожалуйста, выберите минимум два сервиса для этого чата!</value>
     </data>
 </root>

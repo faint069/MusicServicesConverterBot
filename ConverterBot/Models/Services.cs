@@ -16,6 +16,8 @@ namespace ConverterBot.Models
     {
     }
 
+    public static int Count => Clients.Count;
+
     public static List<string> Names
     {
       get

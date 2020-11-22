@@ -185,17 +185,31 @@ namespace ConverterBot.Bot
     {
       if ( callbackQueryEventArgs.CallbackQuery.Data.StartsWith( "set_command" ) )
       {
+        string callbackData = callbackQueryEventArgs.CallbackQuery.Data.Split( '|' ).Last( );
+        
         long chatId = callbackQueryEventArgs.CallbackQuery.Message.Chat.Id;
         
-        Bot.Client.EditMessageReplyMarkupAsync( new ChatId( chatId ),
-                                                callbackQueryEventArgs.CallbackQuery.Message.MessageId, 
-                                                InlineKeyboardMarkup.Empty( ) );
-        
-        string service = callbackQueryEventArgs.CallbackQuery.Data.Split( '|' ).Last( );
         if ( Dialogs.TryGetValue( chatId, out SetServicesDialog dialog ) )
         {
-          dialog.SelectedServices.Add( service );
-          dialog.PerformStep(  );
+          if ( callbackData == "done" )
+          {
+            if ( dialog.SelectedServices.Count >= 2 )
+            {
+              dialog.IsOver = true;
+            }
+            else
+            {
+              Bot.Client.SendTextMessageAsync( chatId, Messages.NotEnoughServices
+                        .GetLocalized( dialog.Culture ) );
+              return;
+            }
+          }
+          else
+          {
+            dialog.SelectedServices.Add( callbackData );
+          }
+          
+          dialog.PerformStep( );
           if ( dialog.IsOver )
           {
             Dialogs.Remove( chatId );

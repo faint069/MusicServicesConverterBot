@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ConverterBot.Localization;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConverterBot.Models.Dialogs
@@ -8,6 +9,8 @@ namespace ConverterBot.Models.Dialogs
   public class SetServicesDialog: IDialog
   {
     private readonly string[] _messages = new string[3];
+    private readonly string   _culture;
+    private          Message  _lastMessage;
 
     private InlineKeyboardMarkup Keyboard
     {
@@ -19,11 +22,24 @@ namespace ConverterBot.Models.Dialogs
         }
         else
         {
-          return new InlineKeyboardMarkup( Services.FriendlyNames.Except( SelectedServices )
-            .Select( _ =>
-              new InlineKeyboardButton
-              {Text = _, 
-                CallbackData = "set_command|" + _ } ) );
+          List<InlineKeyboardButton> buttons1Row = Services.FriendlyNames.Except( SelectedServices )
+                                                                         .Select( _ => new InlineKeyboardButton
+                                                                                       {
+                                                                                         Text = _,
+                                                                                         CallbackData = "set_command|" + _
+                                                                                       } )
+                                                                         .ToList( );
+          
+          List<InlineKeyboardButton> buttons2Row = new List<InlineKeyboardButton>
+                                                   {
+                                                     new InlineKeyboardButton
+                                                     {
+                                                       Text = "Done",
+                                                       CallbackData = "set_command|done"
+                                                     } 
+                                                   };
+          
+        return new InlineKeyboardMarkup( new List<List<InlineKeyboardButton>>{ buttons1Row, buttons2Row } );
         }
       }
     }
@@ -31,21 +47,21 @@ namespace ConverterBot.Models.Dialogs
     public SetServicesDialog( long chatId, string culture = "en" )
     {
       Step = 0;
-      MaxSteps = 3;
+      MaxSteps = Services.Count + 1;
       ChatId = chatId;
+      _culture = culture;
+      _lastMessage = new Message( );
       IsOver = false;
       SelectedServices = new List<string>( );
       
       _messages[0] = Messages.SetServicesFirst.GetLocalized( culture );
-      _messages[1] = Messages.SetServicesSecond.GetLocalized( culture );
-      _messages[2] = Messages.SetServicesThird.GetLocalized( culture );
-
     }
 
     public long ChatId { get; }
     public int Step { get; set; }
     public bool IsOver { get; set; }
     public int MaxSteps { get; }
+    public string Culture => _culture;
 
     public List<string> SelectedServices { get; }
         
@@ -53,15 +69,36 @@ namespace ConverterBot.Models.Dialogs
     {
       if ( !IsOver )
       {
-        Bot.Bot.Client.SendTextMessageAsync( ChatId, _messages[Step], replyMarkup: Keyboard );
+        if ( Step == 0 )
+        {
+          _lastMessage = Bot.Bot.Client.SendTextMessageAsync( ChatId, _messages[Step], replyMarkup: Keyboard ).Result;
+        }
+
+        if ( Step >= 1 && Step < MaxSteps )
+        {
+          _lastMessage = Bot.Bot.Client.EditMessageReplyMarkupAsync( ChatId, _lastMessage.MessageId, Keyboard ).Result;
+        }
+
         Step++;
         if ( Step >= MaxSteps )
         {
-          IsOver = true;
-          DB.SetServicesForChat( ChatId, SelectedServices.ToArray(  ) );
-          Bot.Bot.Client.SendTextMessageAsync( ChatId, string.Join( ", ", SelectedServices ) );
+         IsOver = true;
+         FinishDialog(  );
         }
       }
+      
+      else
+      {
+        FinishDialog(  );
+      }
+    }
+
+    private void FinishDialog( )
+    {
+      DB.SetServicesForChat( ChatId, SelectedServices.ToArray(  ) );
+      Bot.Bot.Client.EditMessageReplyMarkupAsync( ChatId, _lastMessage.MessageId, InlineKeyboardMarkup.Empty( ) );
+      Bot.Bot.Client.SendTextMessageAsync( ChatId, Messages.ServicesInChat.GetLocalized( _culture ) + 
+                                                   string.Join( ", ", SelectedServices ) );
     }
   }
 }

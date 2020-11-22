@@ -19,16 +19,10 @@
 </value>
     </data>
     <data name="ServicesInChatMessage" xml:space="preserve">
-        <value>Services for converting in this chat:</value>
+        <value>Services for converting in this chat: </value>
     </data>
     <data name="SetServicesFirstMessage" xml:space="preserve">
-        <value>Select first service</value>
-    </data>
-    <data name="SetServicesSecondMessage" xml:space="preserve">
-        <value>Select second service</value>
-    </data>
-    <data name="SetServicesThirdMessage" xml:space="preserve">
-        <value>Setup is over. Now in this chat are: </value>
+        <value>Select services for this chat, You can select two or more services</value>
     </data>
     <data name="MusicNotFoundMessage" xml:space="preserve">
         <value>Sorry, I cant't found anything. Here is Search Results, You can check it Yourself: </value>
@@ -46,5 +40,8 @@ If You have questions or suggestions please contact author: @Feelatoff</value>
     </data>
     <data name="WrongUriMessage" xml:space="preserve">
         <value>This is not a link to a Streaming Service or I don't know this service yet, or I don't know what to do with this tye of content</value>
+    </data>
+    <data name="NotEnoughServicesMessage" xml:space="preserve">
+        <value>Please, select at least two services for this chat!</value>
     </data>
 </root>

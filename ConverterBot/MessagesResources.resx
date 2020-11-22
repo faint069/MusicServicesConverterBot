@@ -30,12 +30,6 @@
     <data name="SetServicesFirstMessage" xml:space="preserve">
         <value />
     </data>
-    <data name="SetServicesSecondMessage" xml:space="preserve">
-        <value />
-    </data>
-    <data name="SetServicesThirdMessage" xml:space="preserve">
-        <value />
-    </data>
     <data name="MusicNotFoundMessage" xml:space="preserve">
         <value />
     </data>
@@ -49,6 +43,9 @@
         <value />
     </data>
     <data name="WrongUriMessage" xml:space="preserve">
+        <value />
+    </data>
+    <data name="NotEnoughServicesMessage" xml:space="preserve">
         <value />
     </data>
 </root>
