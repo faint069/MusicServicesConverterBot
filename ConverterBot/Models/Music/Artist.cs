@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Transactions;
+using Yandex.Music.Api.Models.Search.Artist;
 
 namespace ConverterBot.Models.Music
 {
   public class Artist : IMusic
   {
-    private readonly Album  _sampleAlbum;
+    private readonly Album _sampleAlbum;
     private readonly string _name;
     private readonly string _yandexId;
     private readonly string _spotifyId;
@@ -15,7 +16,7 @@ namespace ConverterBot.Models.Music
     /// </summary>
     public Artist( )
     {
-            
+
     }
 
     /// <summary>
@@ -27,19 +28,25 @@ namespace ConverterBot.Models.Music
     /// <param name="spotifyId">ID Артиста в Спотифай</param>
     public Artist( string name, Album sampleAlbum, string yandexId = null, string spotifyId = null )
     {
-      _name        = name.Trim( );
+      _name = name.Trim( );
       _sampleAlbum = sampleAlbum;
-      _yandexId    = yandexId;
-      _spotifyId   = spotifyId;
+      _yandexId = yandexId;
+      _spotifyId = spotifyId;
     }
 
-    public string Name => _name;
+    public Artist( YSearchArtistModel yArtist )
+    {
+      _name        = yArtist.Name;
+      _sampleAlbum = null;
+    }
 
-    public Album SampleAlbum => _sampleAlbum;
+    public string Name        => _name;
 
-    public string YandexId => _yandexId;
+    public Album  SampleAlbum => _sampleAlbum;
 
-    public string SpotifyId => _spotifyId;
+    public string YandexId    => _yandexId;
+
+    public string SpotifyId   => _spotifyId;
 
     public string QueryString => $"{_name}";
 

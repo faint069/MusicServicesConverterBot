@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Yandex.Music.Api.Models.Search.Album;
 
 namespace ConverterBot.Models.Music
 {
@@ -32,26 +33,23 @@ namespace ConverterBot.Models.Music
       _artist    = artist.Trim( );
       _yandexId  = yandexId;
       _spotifyId = spotifyId;
-
-      //Если пришла полная дата, оставляем только год
-      if ( year.Length <= 4 )
-      {
-        _year = year;
-      }
-      else
-      {
-        char separator = year.ToCharArray( ).First( _ => !char.IsDigit( _ ) );
-        _year = year.Split( separator ).First( _ => _.Length == 4 );
-      }
+      _year       = year;
     }
 
-    public string Title  => _title;
-      
-    public string Artist => _artist;
-           
-    public string Year   => _year;
+    public Album( YSearchAlbumModel yAlbum )
+    {
+      _title  = yAlbum.Title;
+      _artist = yAlbum.Artists.First( ).Name;
+      _year   = yAlbum.Year.ToString( );
+    }
 
-    public string YandexId => _yandexId;
+    public string Title     => _title;
+      
+    public string Artist    => _artist;
+           
+    public string Year      => _year;
+
+    public string YandexId  => _yandexId;
 
     public string SpotifyId => _spotifyId;
 

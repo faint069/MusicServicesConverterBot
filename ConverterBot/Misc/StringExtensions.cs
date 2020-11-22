@@ -30,7 +30,7 @@
     /// </summary>
     /// <param name="input">Входная строка</param>
     /// <returns></returns>
-    public static string RemoveAllBrackets( string input )
+    public static string RemoveAllBrackets( this string input )
     {
       while ( input != RemoveBrackets( input ) )
       {

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using ConverterBot.Misc;
 using ConverterBot.Models.Music;
 using Serilog;
 using Yandex.Music.Api;
@@ -101,17 +103,21 @@ namespace ConverterBot.Models.Clients
               																							 .Result;
           foreach ( YSearchTrackModel ymTrack in response.Tracks.Results )
           {
-            if ( musicToSearch.Equals( new Track( ymTrack.Title,
-              																				 ymTrack.Artists.First( ).Name,
-              																				 ymTrack.Albums.First( ).Title,
-              																				 0 ) ) )
+            if ( musicToSearch.Equals( new Track( ymTrack ) ) )
             {
               return BuildUri( ymTrack );
             }
-                        
           }
-          break;
+
+          int count = response.Tracks.Results.Count >= 5 ? 5 : response.Tracks.Results.Count;
+
+          List<(Track, string)> tracksWithUris = response.Tracks.Results.Take( count )
+                                                                        .Select( _ => ( new Track( _ ), BuildUri( _ ) ) )
+                                                                        .ToList( );
+
+          return InlineUriFormatter.FormatTracks( tracksWithUris );
         }
+        
         case Album _:
         {
           YSearch response = yandexMusicClient.Search.Albums( yAuthStorage, 
@@ -119,16 +125,20 @@ namespace ConverterBot.Models.Clients
             																									.Result;
           foreach ( YSearchAlbumModel ymAlbum in response.Albums.Results )
           {
-            if ( musicToSearch.Equals( new Album( ymAlbum.Title,
-              												 ymAlbum.Artists.First( ).Name,
-              												 ymAlbum.Year.ToString( )) ) )
+            if ( musicToSearch.Equals( new Album( ymAlbum ) ) )
             {
               return BuildUri( ymAlbum );
             }
-                        
           }
-          break;
+          
+          int count = response.Albums.Results.Count >= 5 ? 5 : response.Albums.Results.Count;
+
+          List<(Album, string)> albumsWithUris = response.Albums.Results.Take( count )
+                                                                        .Select( _ => ( new Album( _ ), BuildUri( _ ) ) )
+                                                                        .ToList( );
+          return InlineUriFormatter.FormatAlbums( albumsWithUris );
         }
+        
         case Artist artistToSearch:
         {
           YSearch response = yandexMusicClient.Search.Artist( yAuthStorage, 
@@ -160,8 +170,13 @@ namespace ConverterBot.Models.Clients
               }
             }
           }
-                        
-          break;
+          
+          int count = response.Artists.Results.Count >= 5 ? 5 : response.Artists.Results.Count;
+
+          List<(Artist, string)> artistsToSearch = response.Artists.Results.Take( count )
+                                                                           .Select( _ => ( new Artist( _ ), BuildUri( _ ) ) )
+                                                                           .ToList( );
+          return InlineUriFormatter.FormatArtists( artistsToSearch );
         }
       }
 

@@ -27,8 +27,6 @@ namespace ConverterBot
           LogEventLevel.Debug )
         .WriteTo.Console( LogEventLevel.Debug )
         .CreateLogger( );
-
-      var music = Services.GetClientFromName( "music.youtube" ).ParseUri( "https://music.youtube.com/channel/UCpqq5sZCFH6vkIrO9PZc8bA" );
       
       Bot.Bot.Client.StartReceiving(  );
 
