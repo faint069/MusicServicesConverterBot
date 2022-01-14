@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ConverterBot.Models.Music;
 
 namespace ConverterBot.Misc
 {
   /// <summary>
-  /// Formats incoming music with URI into inline format via MarckuoV2
+  /// Formats incoming music with URI into inline format via MarckupV2
   /// </summary>
   public static class InlineUriFormatter
   {
@@ -12,9 +13,11 @@ namespace ConverterBot.Misc
     {
       string output = string.Empty;
       int i = 1;
-      foreach ( var item in input )
+      foreach ( var (track, uri) in input )
       {
-        output += $"{i}. {item.Item1.Artist} - {item.Item1.Album} - [{item.Item1.Title}]({item.Item2})\n";
+        output += output == string.Empty ? string.Empty : Environment.NewLine;
+        
+        output += $"0{i}. {track.Artist} - {track.Album} - [{track.Title}]({uri})";
         i++;
       }
 
@@ -25,9 +28,11 @@ namespace ConverterBot.Misc
     {
       string output = string.Empty;
       int i = 1;
-      foreach ( var item in input )
+      foreach ( var (album, uri) in input )
       {
-        output += $"{i}. {item.Item1.Artist} - [{item.Item1.Title}]({item.Item2})\n";
+        output += output == string.Empty ? string.Empty : Environment.NewLine;
+        
+        output += $"{i}. {album.Artist} - [{album.Title}]({uri})";
         i++;
       }
 
@@ -38,9 +43,11 @@ namespace ConverterBot.Misc
     {
       string output = string.Empty;
       int i = 1;
-      foreach ( var item in input )
+      foreach ( var (artist, uri) in input )
       {
-        output += $"{i}. [{item.Item1.Name}]({item.Item2})\n";
+        output += output == string.Empty ? string.Empty : Environment.NewLine;
+        
+        output += $"{i}. [{artist.Name}]({uri})";
         i++;
       }
 

@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ConverterBot.Misc
 {
   static class Stickers
   {
-    public static string GetRandomSmickingBotSticker( )
+    private static readonly List<string> _stickers = Config.SmockingBotStickers;
+    
+    public static string GetRandomSmockingBotSticker( )
     {
-      return Config.SmockingBotStickers.OrderBy( x => Guid.NewGuid( ) ).FirstOrDefault( );
+      return Count != 0 ? Config.SmockingBotStickers.OrderBy( _ => Guid.NewGuid( ) ).FirstOrDefault( ) : null;
     }
+
+    public static int Count => _stickers?.Count ?? 0;
   }
 }

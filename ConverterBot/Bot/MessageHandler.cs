@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ConverterBot.Localization;
 using ConverterBot.Misc;
@@ -11,7 +12,6 @@ using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ConverterBot.Bot
 {
@@ -34,6 +34,9 @@ namespace ConverterBot.Bot
         case MessageType.VideoNote:
           HandleVideonote( e.Message );
           break;
+        case MessageType.Sticker:
+          HandleSticker( e.Message );
+          break;
         default: 
           HandleCommon( e.Message );
           break;
@@ -52,7 +55,16 @@ namespace ConverterBot.Bot
       //Bot.Client.SendTextMessageAsync( message.Chat.Id, 
       //                                 Messages.CantProcess.GetLocalized( message.From.LanguageCode ) );
     }
-        
+
+    private static void HandleSticker( Message message )
+    {
+      Log.Warning( "Sticker Message received in chat: " +
+                   $"{message.Chat.Id} "                +
+                   $"from: {message.From.FirstName} "   +
+                   $"{message.From.LastName}. "         +
+                   $"Sticker ID: {message.Sticker.FileId} " );
+    }
+
     private static void HandleText( Message message )
     {
       Log.Information( "Text Message received in chat: " +
@@ -84,13 +96,17 @@ namespace ConverterBot.Bot
 
     private static void HandleVideonote( Message message )
     {
-      Log.Information( "Video Message received: " +
-                       $"{message.Chat.Id} " +
+      Log.Information( "Video Message received: "         +
+                       $"{message.Chat.Id} "              +
                        $"from: {message.From.FirstName} " +
-                       $"{message.From.LastName}.");
-                     
-      Bot.Client.SendStickerAsync( message.Chat.Id,
-        new InputOnlineFile( Stickers.GetRandomSmickingBotSticker(  ) ) );
+                       $"{message.From.LastName}." );
+
+      
+      if ( Stickers.Count != 0 )
+      {
+        Bot.Client.SendStickerAsync( message.Chat.Id,
+                                     Stickers.GetRandomSmockingBotSticker(  ) );
+      }
     }
 
     private static void ProcessUri( string uri, Message message )
@@ -106,11 +122,21 @@ namespace ConverterBot.Bot
             if ( parsedMusic != null )
             {
               Bot.Client.SendTextMessageAsync( message.Chat.Id, parsedMusic.ToString( ) );
-              IClient outClient =
-                Services.GetClientFromFriendlyName( servicesInChat.First( _ => _ != inClient.FriendlyName ) );
-              string reply = outClient.SearchMusic( parsedMusic ) ??
-                             Messages.MusicNotFound.GetLocalized( message.From.LanguageCode ) + 
-                             outClient.GetSearchUri( parsedMusic );
+              
+              var    servicesToSearch = servicesInChat.Where( _ => _ != inClient.FriendlyName );
+              
+              var reply = string.Empty;
+              
+              foreach ( var service in servicesToSearch )
+              {
+                IClient outClient = Services.GetClientFromFriendlyName( service );
+                reply += $"{outClient.FriendlyName}:{Environment.NewLine}";
+                reply += outClient.SearchMusic( parsedMusic ) ??
+                               Messages.MusicNotFound.GetLocalized( message.From.LanguageCode ) + 
+                               outClient.GetSearchUri( parsedMusic );
+
+                reply += Environment.NewLine + Environment.NewLine;
+              }
 
               Bot.Client.SendTextMessageAsync( message.Chat.Id, reply, ParseMode.Markdown, !reply.IsUri(  ));
             }
