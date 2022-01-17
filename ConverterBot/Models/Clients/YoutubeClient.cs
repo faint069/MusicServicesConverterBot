@@ -127,9 +127,8 @@ namespace ConverterBot.Models.Clients
 
     public string GetSearchUri( IMusic toSearch )
     {
-      return string.Concat( "https://music.youtube.com/search?q=",
-                            toSearch.QueryString.Replace( ' ', '+' ) );
-      
+	    return string.Concat( "https://music.youtube.com/search?q=",
+	                          string.Join( '+', toSearch.QueryString.Split( ' ', '’', '\'' ) ) );
     }
   }
 }
