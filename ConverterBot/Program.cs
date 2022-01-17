@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using ConverterBot.Models;
 using Serilog;
 using Serilog.Events;
 
@@ -29,7 +28,7 @@ namespace ConverterBot
         .WriteTo.Console( LogEventLevel.Debug )
         .CreateLogger( );
       
-      Bot.Bot.Client.StartReceiving(  );
+      Bot.Bot.StartReceiving(  );
 
       while ( true )
       {

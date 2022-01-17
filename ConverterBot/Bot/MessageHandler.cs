@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ConverterBot.Localization;
 using ConverterBot.Misc;
 using ConverterBot.Models;
@@ -8,7 +10,7 @@ using ConverterBot.Models.Clients;
 using ConverterBot.Models.Dialogs;
 using ConverterBot.Models.Music;
 using Serilog;
-using Telegram.Bot.Args;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -23,22 +25,30 @@ namespace ConverterBot.Bot
     {
     }
        
-    public static void BotOnMessage( object? sender, MessageEventArgs e )
-    { 
-      switch ( e.Message.Type )
+    public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    {
+      if (update.Message is Message message)
       {
-        case MessageType.Text:
-          HandleText( e.Message );
-          break;
-        case MessageType.VideoNote:
-          HandleVideonote( e.Message );
-          break;
-        case MessageType.Sticker:
-          HandleSticker( e.Message );
-          break;
-        default: 
-          HandleCommon( e.Message );
-          break;
+        switch ( message.Type )
+        {
+          case MessageType.Text:
+            HandleText( message );
+            break;
+          case MessageType.VideoNote:
+            HandleVideonote( message );
+            break;
+          case MessageType.Sticker:
+            HandleSticker( message );
+            break;
+          default: 
+            HandleCommon( message );
+            break;
+        }
+      }
+
+      if ( update.CallbackQuery != null )
+      {
+        HandeCallbackQuery( update.CallbackQuery );
       }
     }
     
@@ -137,7 +147,7 @@ namespace ConverterBot.Bot
                 reply += Environment.NewLine + Environment.NewLine;
               }
 
-              Bot.Client.SendTextMessageAsync( message.Chat.Id, reply, ParseMode.Markdown, !reply.IsUri(  ));
+              Bot.Client.SendTextMessageAsync( message.Chat.Id, reply, ParseMode.Markdown, disableWebPagePreview: !reply.IsUri(  ));
             }
             else
             {
@@ -195,8 +205,8 @@ namespace ConverterBot.Bot
         if ( services != null )
         {
           Bot.Client.SendTextMessageAsync( message.Chat.Id, Messages.ServicesInChat
-                                                              .GetLocalized( message.From.LanguageCode )
-                                                            + $" {services[0]}, {services[1]}" );
+                                                                    .GetLocalized( message.From.LanguageCode ) +
+                                                            string.Join( ", ", services ) );
         }
         else
         {
@@ -205,39 +215,42 @@ namespace ConverterBot.Bot
         }
       }
     }
-    
-    public static void BotOnInlineQuery( object? sender, CallbackQueryEventArgs callbackQueryEventArgs )
+
+    private static void HandeCallbackQuery( CallbackQuery query )
     {
-      if ( callbackQueryEventArgs.CallbackQuery.Data.StartsWith( "set_command" ) )
+      if ( query.Data != null && query.Message != null )
       {
-        string callbackData = callbackQueryEventArgs.CallbackQuery.Data.Split( '|' ).Last( );
-        
-        long chatId = callbackQueryEventArgs.CallbackQuery.Message.Chat.Id;
-        
-        if ( Dialogs.TryGetValue( chatId, out SetServicesDialog dialog ) )
+        if ( query.Data.StartsWith( "set_command" ) )
         {
-          if ( callbackData == "done" )
+          string callbackData = query.Data.Split( '|' ).Last( );
+
+          long chatId = query.Message.Chat.Id;
+
+          if ( Dialogs.TryGetValue( chatId, out SetServicesDialog dialog ) )
           {
-            if ( dialog.SelectedServices.Count >= 2 )
+            if ( callbackData == "done" )
             {
-              dialog.IsOver = true;
+              if ( dialog.SelectedServices.Count >= 2 )
+              {
+                dialog.IsOver = true;
+              }
+              else
+              {
+                Bot.Client.SendTextMessageAsync( chatId, Messages.NotEnoughServices
+                                                                 .GetLocalized( dialog.Culture ) );
+                return;
+              }
             }
             else
             {
-              Bot.Client.SendTextMessageAsync( chatId, Messages.NotEnoughServices
-                        .GetLocalized( dialog.Culture ) );
-              return;
+              dialog.SelectedServices.Add( callbackData );
             }
-          }
-          else
-          {
-            dialog.SelectedServices.Add( callbackData );
-          }
-          
-          dialog.PerformStep( );
-          if ( dialog.IsOver )
-          {
-            Dialogs.Remove( chatId );
+
+            dialog.PerformStep( );
+            if ( dialog.IsOver )
+            {
+              Dialogs.Remove( chatId );
+            }
           }
         }
       }

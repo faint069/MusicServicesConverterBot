@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ConverterBot.Localization;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -23,7 +24,7 @@ namespace ConverterBot.Models.Dialogs
         else
         {
           List<InlineKeyboardButton> buttons1Row = Services.FriendlyNames.Except( SelectedServices )
-                                                                         .Select( _ => new InlineKeyboardButton
+                                                                         .Select( _ => new InlineKeyboardButton(_)
                                                                                        {
                                                                                          Text = _,
                                                                                          CallbackData = "set_command|" + _
@@ -32,7 +33,7 @@ namespace ConverterBot.Models.Dialogs
           
           List<InlineKeyboardButton> buttons2Row = new List<InlineKeyboardButton>
                                                    {
-                                                     new InlineKeyboardButton
+                                                     new InlineKeyboardButton("Done")
                                                      {
                                                        Text = "Done",
                                                        CallbackData = "set_command|done"
