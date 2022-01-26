@@ -169,8 +169,8 @@ namespace ConverterBot.Bot
       }
       else
       {
-        Bot.Client.SendTextMessageAsync( message.Chat.Id, 
-                                         Messages.WrongUri.GetLocalized(message.From.LanguageCode) );
+        //Bot.Client.SendTextMessageAsync( message.Chat.Id, 
+        //                                 Messages.WrongUri.GetLocalized(message.From.LanguageCode) );
       }
     }
 
